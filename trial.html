@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SupplyChain AI - Sign In</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(180deg, #dbe9ff 0%, #e8f1ff 50%, #f0f5ff 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 18px;
+            font-weight: 400;
+            color: #6b7280;
+            letter-spacing: -0.2px;
+        }
+
+        .login-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+            width: 100%;
+            max-width: 540px;
+            padding: 48px 56px;
+        }
+
+        .card-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 32px;
+            letter-spacing: -0.3px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            height: 48px;
+            padding: 12px 16px;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            color: #1a1a1a;
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .form-group input::placeholder {
+            color: #9ca3af;
+            font-weight: 400;
+        }
+
+        .form-group input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-group input:hover {
+            border-color: #9ca3af;
+        }
+
+        .sign-in-btn {
+            width: 100%;
+            height: 48px;
+            background: #3b82f6;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 8px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .sign-in-btn:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .sign-in-btn:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            height: 1px;
+            background: #e5e7eb;
+            margin: 32px 0;
+        }
+
+        .demo-accounts {
+            margin-top: 32px;
+        }
+
+        .demo-accounts-title {
+            font-size: 14px;
+            font-weight: 400;
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+
+        .demo-account {
+            background: #f9fafb;
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #4b5563;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .demo-account:last-child {
+            margin-bottom: 0;
+        }
+
+        .demo-account:hover {
+            background: #f3f4f6;
+            transform: translateX(2px);
+        }
+
+        .demo-account strong {
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 36px;
+            }
+
+            .header p {
+                font-size: 16px;
+            }
+
+            .login-card {
+                padding: 36px 28px;
+                max-width: 100%;
+            }
+
+            .card-title {
+                font-size: 24px;
+            }
+        }
+
+        /* Loading state (optional) */
+        .sign-in-btn:disabled {
+            background: #93c5fd;
+            cursor: not-allowed;
+        }
+
+        /* Success animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-card {
+            animation: fadeIn 0.4s ease;
+        }
+
+        .header {
+            animation: fadeIn 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>SupplyChain AI</h1>
+        <p>AI-Powered Supplier Risk Management</p>
+    </div>
+
+    <div class="login-card">
+        <h2 class="card-title">Sign In</h2>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="Enter your email"
+                    required
+                    autocomplete="email"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    placeholder="Enter your password"
+                    required
+                    autocomplete="current-password"
+                >
+            </div>
+
+            <button type="submit" class="sign-in-btn" id="signInBtn">
+                Sign In
+            </button>
+        </form>
+
+        <div class="divider"></div>
+
+        <div class="demo-accounts">
+            <p class="demo-accounts-title">Demo Accounts:</p>
+            
+            <div class="demo-account" data-email="admin@platform.com" data-password="admin123">
+                <strong>Admin:</strong> admin@platform.com
+            </div>
+            
+            <div class="demo-account" data-email="seller@test.com" data-password="seller123">
+                <strong>Seller:</strong> seller@test.com
+            </div>
+            
+            <div class="demo-account" data-email="manufacturer@test.com" data-password="manufacturer123">
+                <strong>Manufacturer:</strong> manufacturer@test.com
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get form elements
+        const loginForm = document.getElementById('loginForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const signInBtn = document.getElementById('signInBtn');
+        const demoAccounts = document.querySelectorAll('.demo-account');
+
+        // Form submit handler
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            // Log credentials to console
+            console.log('Login Attempt:');
+            console.log('Email:', email);
+            console.log('Password:', password);
+
+            // Determine user role based on email
+            let role = 'user';
+            if (email.includes('admin')) {
+                role = 'admin';
+            } else if (email.includes('seller')) {
+                role = 'seller';
+            } else if (email.includes('manufacturer')) {
+                role = 'manufacturer';
+            }
+
+            console.log('Detected Role:', role);
+
+            // Simulate loading state
+            signInBtn.disabled = true;
+            signInBtn.textContent = 'Signing In...';
+
+            // Simulate authentication delay
+            setTimeout(() => {
+                // Success message
+                alert(`Successfully logged in as ${role}!\n\nEmail: ${email}`);
+                
+                // Reset button
+                signInBtn.disabled = false;
+                signInBtn.textContent = 'Sign In';
+
+                // In a real application, you would redirect here:
+                // window.location.href = '/dashboard';
+                
+                console.log('Login successful! Redirect to dashboard...');
+            }, 1000);
+        });
+
+        // Demo account click handlers
+        demoAccounts.forEach(account => {
+            account.addEventListener('click', function() {
+                const email = this.getAttribute('data-email');
+                const password = this.getAttribute('data-password');
+                
+                // Auto-fill form
+                emailInput.value = email;
+                passwordInput.value = password;
+                
+                // Add visual feedback
+                this.style.background = '#e0e7ff';
+                setTimeout(() => {
+                    this.style.background = '#f9fafb';
+                }, 200);
+
+                // Focus on sign in button
+                signInBtn.focus();
+
+                console.log('Demo account selected:', email);
+            });
+
+            // Add keyboard support for demo accounts
+            account.setAttribute('tabindex', '0');
+            account.setAttribute('role', 'button');
+            
+            account.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click();
+                }
+            });
+        });
+
+        // Input validation feedback
+        emailInput.addEventListener('blur', function() {
+            if (this.value && !this.value.includes('@')) {
+                this.style.borderColor = '#ef4444';
+                console.log('Invalid email format');
+            } else {
+                this.style.borderColor = '#d1d5db';
+            }
+        });
+
+        passwordInput.addEventListener('input', function() {
+            if (this.value.length > 0 && this.value.length < 6) {
+                console.log('Weak password - consider using at least 6 characters');
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Alt + 1/2/3 to quickly select demo accounts
+            if (e.altKey) {
+                if (e.key === '1') {
+                    demoAccounts[0].click();
+                } else if (e.key === '2') {
+                    demoAccounts[1].click();
+                } else if (e.key === '3') {
+                    demoAccounts[2].click();
+                }
+            }
+        });
+
+        // Log page load
+        console.log('SupplyChain AI Login Page loaded');
+        console.log('Tip: Click any demo account to auto-fill credentials');
+        console.log('Keyboard shortcuts: Alt+1/2/3 for quick demo account selection');
+    </script>
+</body>
+</html>
