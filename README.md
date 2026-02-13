@@ -3,8 +3,7 @@ Suppliers risk  management for dropshipping where  the dropshippers find supplie
 SupplyChain AI — Dropshipper Interface
 
 Overview
-
-SupplyChain AI is a front-end prototype designed to support dropshippers in discovering verified manufacturers, evaluating supplier reliability using AI-driven insights, managing orders, and providing feedback.
+Suppliers risk  management for dropshipping is a front-end prototype designed to support dropshippers in discovering verified manufacturers, evaluating supplier reliability using AI-driven insights, managing orders, and providing feedback.
 The system demonstrates an integrated workflow covering supplier search, risk analysis, order tracking, and review submission.
 
 This project is implemented as a client-side web interface using HTML, CSS, and JavaScript.
@@ -160,4 +159,4 @@ Future Improvements
 
 Author
 
-Student Project — SupplyChain AI Interface Prototype
+Student Project — Supplier Risk Management for Dropshipping
