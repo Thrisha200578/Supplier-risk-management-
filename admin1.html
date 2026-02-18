@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1909,3 +1910,1916 @@
   </script>
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - SupplyChain AI</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #1e40af;
+      --primary-light: #dbeafe;
+      --success: #10b981;
+      --success-light: #d1fae5;
+      --warning: #f59e0b;
+      --warning-light: #fef3c7;
+      --danger: #ef4444;
+      --danger-light: #fee2e2;
+      --text-primary: #1f2937;
+      --text-secondary: #6b7280;
+      --border: #e5e7eb;
+      --bg: #f9fafb;
+      --surface: #ffffff;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .navbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow);
+    }
+
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      position: relative;
+    }
+
+    .admin-badge {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      padding: 0.375rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    .status-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: var(--shadow);
+      position: absolute;
+      top: 100%;
+      right: 0;
+      width: 250px;
+      z-index: 100;
+      display: none;
+    }
+
+    .status-panel.show {
+      display: block;
+    }
+
+    .status-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    .status-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .badge-active, .badge-verified, .badge-approved {
+      background: var(--success-light);
+      color: var(--success);
+    }
+
+    .badge-expired, .badge-suspended {
+      background: var(--danger-light);
+      color: var(--danger);
+    }
+
+    .notification-bell {
+      position: relative;
+    }
+
+    .btn-bell {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 6px;
+      transition: background 0.2s ease;
+    }
+
+    .btn-bell:hover {
+      background: var(--bg);
+    }
+
+    .badge-notification {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: var(--danger);
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+
+    .notification-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow-lg);
+      width: 300px;
+      max-height: 400px;
+      overflow-y: auto;
+      z-index: 100;
+      display: none;
+    }
+
+    .notification-dropdown.show {
+      display: block;
+    }
+
+    .notification-item {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .notification-item:hover {
+      background: var(--bg);
+    }
+
+    .notification-item.unread {
+      background: var(--primary-light);
+    }
+
+    .notification-item:last-child {
+      border-bottom: none;
+    }
+
+    .notification-title {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .notification-message {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .notification-time {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.25rem;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      margin: 2rem 0 1rem 0;
+      color: var(--text-primary);
+    }
+
+    h3 {
+      font-size: 1.125rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-primary);
+    }
+
+    p {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+    }
+
+    .stat-card.primary {
+      border-left: 4px solid var(--primary);
+    }
+
+    .stat-card.success {
+      border-left: 4px solid var(--success);
+    }
+
+    .stat-card.warning {
+      border-left: 4px solid var(--warning);
+    }
+
+    .stat-card.danger {
+      border-left: 4px solid var(--danger);
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* Section */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 0.625rem 1.25rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #059669;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+
+    .btn-secondary {
+      background: var(--bg);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border);
+    }
+
+    .btn-sm {
+      padding: 0.5rem 1rem;
+      font-size: 0.8125rem;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-block;
+      padding: 0.375rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+    }
+
+    .badge-pending {
+      background: var(--warning-light);
+      color: #92400e;
+    }
+
+    .badge-verified {
+      background: var(--success-light);
+      color: #065f46;
+    }
+
+    .badge-rejected {
+      background: var(--danger-light);
+      color: #991b1b;
+    }
+
+    /* Table */
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+    }
+
+    .table th {
+      background: var(--bg);
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-primary);
+      border-bottom: 2px solid var(--border);
+    }
+
+    .table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .table tbody tr {
+      transition: background 0.2s ease;
+    }
+
+    .table tbody tr:hover {
+      background: var(--bg);
+    }
+
+    /* Manufacturers Grid */
+    .manufacturers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .manufacturer-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+    }
+
+    .manufacturer-card:hover {
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary);
+    }
+
+    .manufacturer-card.pending {
+      border-left: 4px solid var(--warning);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .card-title {
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .company-info {
+      margin-bottom: 1rem;
+    }
+
+    .company-name {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .company-email {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .company-location {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-top: 0.25rem;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.625rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.875rem;
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .info-label {
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .info-value {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .document-count {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      margin: 1rem 0;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .action-buttons .btn {
+      flex: 1;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .modal {
+      background: var(--surface);
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg);
+      max-width: 900px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: color 0.2s ease;
+    }
+
+    .close-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .modal-body {
+      padding: 2rem;
+    }
+
+    .modal-footer {
+      padding: 2rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+    }
+
+    /* Document Viewer */
+    .document-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .manufacturer-details {
+      background: var(--bg);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .detail-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .detail-item-label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 0.375rem;
+    }
+
+    .detail-item-value {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .documents-container {
+      display: grid;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .document-item {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s ease;
+    }
+
+    .document-item:hover {
+      background: var(--bg);
+      border-color: var(--primary);
+    }
+
+    .document-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex: 1;
+    }
+
+    .document-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--primary-light);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .document-meta {
+      flex: 1;
+    }
+
+    .document-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .document-date {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .document-preview {
+      background: var(--bg);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .preview-image {
+      width: 100%;
+      height: auto;
+      display: block;
+      background: var(--text-primary);
+    }
+
+    .approval-section {
+      background: var(--bg);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+    }
+
+    .approval-title {
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+
+    .reason-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.875rem;
+      resize: vertical;
+    }
+
+    .reason-textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    /* Filter Tabs */
+    .filter-tabs {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-tab {
+      padding: 0.625rem 1.25rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-primary);
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .filter-tab:hover,
+    .filter-tab.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Progress Bar */
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--bg);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 0.25rem 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      transition: width 0.3s ease;
+    }
+
+    .progress-fill.on-time {
+      background: var(--success);
+    }
+
+    .progress-fill.delay {
+      background: var(--danger);
+    }
+
+    /* Risk Colors */
+    .risk-low {
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    .risk-medium {
+      color: var(--warning);
+      font-weight: 600;
+    }
+
+    .risk-high {
+      color: var(--danger);
+      font-weight: 600;
+    }
+
+    /* Reports Section */
+    .reports-section {
+      margin-bottom: 2rem;
+    }
+
+    .reports-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .reports-filters {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .reports-filter {
+      padding: 0.625rem 1.25rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-primary);
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .reports-filter:hover,
+    .reports-filter.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .table th {
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+    }
+
+    .table th:hover {
+      background: var(--bg);
+    }
+
+    .table th.sort-asc::after {
+      content: ' ▲';
+      font-size: 0.75rem;
+    }
+
+    .table th.sort-desc::after {
+      content: ' ▼';
+      font-size: 0.75rem;
+    }
+
+    /* Alert Panel */
+    .alert-panel {
+      position: fixed;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 300px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg);
+      z-index: 100;
+      display: none;
+      animation: slideInRight 0.3s ease;
+    }
+
+    .alert-panel.show {
+      display: block;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateY(-50%) translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(-50%) translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .alert-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .alert-title {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .alert-counter {
+      background: var(--danger);
+      color: white;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .alert-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .alert-item {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+
+    .alert-item:last-child {
+      border-bottom: none;
+    }
+
+    .alert-item.high-risk {
+      border-left: 4px solid var(--danger);
+    }
+
+    .alert-item.medium-risk {
+      border-left: 4px solid var(--warning);
+    }
+
+    .alert-item.low-risk {
+      border-left: 4px solid var(--success);
+    }
+
+    .alert-message {
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .alert-details {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .alert-dismiss {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 0.25rem;
+      border-radius: 4px;
+      transition: background 0.2s ease;
+    }
+
+    .alert-dismiss:hover {
+      background: var(--border);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      h2 {
+        font-size: 1.25rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .manufacturers-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .modal {
+        width: 95%;
+        max-height: 95vh;
+      }
+
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+
+      .modal-footer {
+        flex-direction: column;
+      }
+
+      .modal-footer .btn {
+        width: 100%;
+      }
+
+      .reports-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+
+      .reports-filters {
+        flex-direction: column;
+      }
+
+      .reports-filter {
+        width: 100%;
+      }
+
+      .alert-panel {
+        width: 280px;
+        right: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="#" class="logo">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+        <span>SupplyChain Admin</span>
+      </a>
+      <div class="user-info">
+        <div class="notification-bell">
+          <button class="btn-bell" onclick="toggleNotificationDropdown()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            <span class="badge-notification" id="notificationBadge" style="display: none;">0</span>
+          </button>
+          <div class="notification-dropdown" id="notificationDropdown">
+            <!-- Notifications will be populated here -->
+          </div>
+        </div>
+        <span onclick="toggleStatusPanel()">Admin User</span>
+        <span class="admin-badge">Admin</span>
+        <div class="status-panel" id="statusPanel">
+          <div class="status-item">
+            <span>Admin Name</span>
+            <span>John Doe</span>
+          </div>
+          <div class="status-item">
+            <span>Role</span>
+            <span>Admin</span>
+          </div>
+          <div class="status-item">
+            <span>Session Status</span>
+            <span class="badge badge-active" id="sessionStatus">Active</span>
+          </div>
+          <div class="status-item">
+            <span>KYC Status</span>
+            <span class="badge badge-verified">Verified</span>
+          </div>
+          <div class="status-item">
+            <span>Account Status</span>
+            <span class="badge badge-approved">Approved</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Page Header -->
+    <div style="margin-bottom: 2rem;">
+      <h1>Manufacturer Management Dashboard</h1>
+      <p>Review and verify manufacturer applications with document-based approval system</p>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+      <div class="stat-card primary">
+        <div class="stat-label">Total Manufacturers</div>
+        <div class="stat-value" id="totalCount">5</div>
+      </div>
+      <div class="stat-card success">
+        <div class="stat-label">Verified Manufacturers</div>
+        <div class="stat-value" id="verifiedCount">3</div>
+      </div>
+      <div class="stat-card warning">
+        <div class="stat-label">Pending Approvals</div>
+        <div class="stat-value" id="pendingCount">2</div>
+      </div>
+      <div class="stat-card danger">
+        <div class="stat-label">Rejected Applications</div>
+        <div class="stat-value" id="rejectedCount">0</div>
+      </div>
+    </div>
+
+    <!-- Supplier Performance Reports Section -->
+    <div class="section reports-section">
+      <div class="reports-header">
+        <h2>Supplier Performance Reports</h2>
+        <div class="reports-filters">
+          <button class="reports-filter active" onclick="filterReports('all')">All</button>
+          <button class="reports-filter" onclick="filterReports('high')">High Risk</button>
+          <button class="reports-filter" onclick="filterReports('medium')">Medium Risk</button>
+          <button class="reports-filter" onclick="filterReports('low')">Low Risk</button>
+        </div>
+      </div>
+      <div class="table-container">
+        <table class="table" id="reportsTable">
+          <thead>
+            <tr>
+              <th onclick="sortTable('supplier')">Supplier Name</th>
+              <th onclick="sortTable('orders')">Total Orders</th>
+              <th onclick="sortTable('onTime')">On-Time %</th>
+              <th onclick="sortTable('delay')">Delay %</th>
+              <th onclick="sortTable('rating')">Average Rating</th>
+              <th onclick="sortTable('risk')">Risk Score</th>
+              <th onclick="sortTable('sentiment')">Sentiment Score</th>
+            </tr>
+          </thead>
+          <tbody id="reportsTableBody">
+            <!-- Reports will be populated here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="filter-tabs">
+      <button class="filter-tab active" onclick="filterManufacturers('all')">All Manufacturers</button>
+      <button class="filter-tab" onclick="filterManufacturers('pending')">Pending Approvals</button>
+      <button class="filter-tab" onclick="filterManufacturers('verified')">Verified</button>
+      <button class="filter-tab" onclick="filterManufacturers('rejected')">Rejected</button>
+    </div>
+
+    <!-- Pending Manufacturer Approvals Section -->
+    <div class="section" id="pendingSection">
+      <div class="section-header">
+        <h2>Pending Manufacturer Approvals</h2>
+        <span style="color: var(--text-secondary); font-weight: 600;" id="pendingCountLabel">0 pending</span>
+      </div>
+      <div class="manufacturers-grid" id="pendingGrid">
+        <!-- Pending manufacturers will be populated here -->
+      </div>
+    </div>
+
+    <!-- Verified Manufacturers Section -->
+    <div class="section" id="verifiedSection">
+      <div class="section-header">
+        <h2>Verified Manufacturers</h2>
+        <span style="color: var(--text-secondary); font-weight: 600;" id="verifiedCountLabel">0 verified</span>
+      </div>
+      <div class="manufacturers-grid" id="verifiedGrid">
+        <!-- Verified manufacturers will be populated here -->
+      </div>
+    </div>
+
+    <!-- Rejected Manufacturers Section -->
+    <div class="section" id="rejectedSection" style="display: none;">
+      <div class="section-header">
+        <h2>Rejected Applications</h2>
+        <span style="color: var(--text-secondary); font-weight: 600;" id="rejectedCountLabel">0 rejected</span>
+      </div>
+      <div class="manufacturers-grid" id="rejectedGrid">
+        <!-- Rejected manufacturers will be populated here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Risk & Sentiment Alert Panel -->
+  <div class="alert-panel" id="alertPanel">
+    <div class="alert-header">
+      <h3 class="alert-title">Risk Alerts</h3>
+      <span class="alert-counter" id="alertCounter">0</span>
+    </div>
+    <div class="alert-list" id="alertList">
+      <!-- Alerts will be populated here -->
+    </div>
+  </div>
+
+  <!-- Document Viewer Modal -->
+  <div class="modal-overlay" id="documentModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Document Review</h2>
+        <button class="close-btn" onclick="closeDocumentModal()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Manufacturer Details -->
+        <div class="manufacturer-details">
+          <h3 style="margin-bottom: 1rem;">Manufacturer Information</h3>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <div class="detail-item-label">Company Name</div>
+              <div class="detail-item-value" id="modalCompanyName">-</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-item-label">Email</div>
+              <div class="detail-item-value" id="modalEmail">-</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-item-label">Location</div>
+              <div class="detail-item-value" id="modalLocation">-</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-item-label">Product Category</div>
+              <div class="detail-item-value" id="modalCategory">-</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Documents Section -->
+        <h3>Uploaded Documents</h3>
+        <div class="documents-container" id="documentsContainer">
+          <!-- Documents will be populated here -->
+        </div>
+
+        <!-- Document Preview -->
+        <div id="documentPreviewSection" style="margin-bottom: 1.5rem;">
+          <h3>Document Preview</h3>
+          <div class="document-preview">
+            <img id="documentImage" class="preview-image" src="" alt="Document Preview">
+          </div>
+        </div>
+
+        <!-- Approval Section -->
+        <div class="approval-section">
+          <div class="approval-title">Take Action</div>
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">
+              Add Verification Notes (Optional)
+            </label>
+            <textarea class="reason-textarea" id="verificationNotes" placeholder="Enter any notes or comments about this application..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeDocumentModal()">Cancel</button>
+        <button class="btn btn-danger" id="rejectBtn" onclick="rejectManufacturer()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="15" y1="9" x2="9" y2="15"></line>
+            <line x1="9" y1="9" x2="15" y2="15"></line>
+          </svg>
+          Reject Application
+        </button>
+        <button class="btn btn-success" id="approveBtn" onclick="approveManufacturer()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Approve Manufacturer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /*
+      Admin Dashboard Script
+      - Single-file implementation using in-memory mock data (no backend)
+      - Manufacturers can be Approved / Rejected from the modal or quick-row actions
+      - Rejected manufacturers can be moved to Verified (Approved)
+      - Ratings and sentiment -> risk level are displayed for all manufacturers
+      - Clear comments explain logic for each function
+    */
+
+    // Mock data array: each manufacturer includes rating and sentiment
+    const manufacturers = [
+      { id: 1, companyName: 'TechPro Manufacturing', email: 'contact@techpro.com', location: 'Shenzhen, China', category: 'Electronics', status: 'Verified', documentsUploaded: 3, rating: 4.8, reviews: 256, sentiment: 0.89, documents: [ { type: 'GST Certificate', uploadDate: '2024-01-10' }, { type: 'Business License', uploadDate: '2024-01-10' }, { type: 'ISO 9001 Certification', uploadDate: '2024-01-11' } ] },
+      { id: 2, companyName: 'Precision Parts Ltd', email: 'info@precisionparts.com', location: 'Bangkok, Thailand', category: 'Auto Parts', status: 'Pending', documentsUploaded: 2, rating: 4.2, reviews: 48, sentiment: 0.62, documents: [ { type: 'Business License', uploadDate: '2024-01-15' }, { type: 'Factory Certificate', uploadDate: '2024-01-15' } ] },
+      { id: 3, companyName: 'Global Textiles Co', email: 'admin@globaltextiles.com', location: 'Mumbai, India', category: 'Textiles', status: 'Verified', documentsUploaded: 4, rating: 4.5, reviews: 120, sentiment: 0.78, documents: [ { type: 'GST Certificate', uploadDate: '2024-01-05' }, { type: 'Business License', uploadDate: '2024-01-05' }, { type: 'Factory Certificate', uploadDate: '2024-01-06' }, { type: 'Compliance Certificate', uploadDate: '2024-01-06' } ] },
+      { id: 4, companyName: 'EcoPackaging Group', email: 'sales@ecopackaging.com', location: 'Ho Chi Minh, Vietnam', category: 'Packaging', status: 'Pending', documentsUploaded: 3, rating: 4.9, reviews: 60, sentiment: 0.95, documents: [ { type: 'Business License', uploadDate: '2024-01-18' }, { type: 'Environmental Certification', uploadDate: '2024-01-18' }, { type: 'Quality Certificate', uploadDate: '2024-01-19' } ] },
+      { id: 5, companyName: 'Advanced Materials Inc', email: 'contact@advmaterials.com', location: 'Seoul, South Korea', category: 'Materials', status: 'Verified', documentsUploaded: 5, rating: 3.8, reviews: 32, sentiment: 0.48, documents: [ { type: 'Business License', uploadDate: '2024-01-01' }, { type: 'Factory Certificate', uploadDate: '2024-01-01' }, { type: 'ISO 9001', uploadDate: '2024-01-02' }, { type: 'Safety Certificate', uploadDate: '2024-01-02' }, { type: 'Environmental Cert', uploadDate: '2024-01-03' } ] }
+    ];
+
+    let currentFilter = 'all';
+    let currentManufacturerId = null;
+
+    // Helper: Compute risk level from rating and sentiment
+    // Returns one of 'Low', 'Medium', 'High'
+    function computeRiskLevel(m) {
+      // Normalize rating (0-5) to 0-1
+      const ratingScore = (m.rating || 0) / 5;
+      const sentimentScore = (m.sentiment !== undefined) ? m.sentiment : 0.5;
+      const score = (ratingScore * 0.6) + (sentimentScore * 0.4); // weight rating higher
+
+      if (score >= 0.8) return 'Low';
+      if (score >= 0.6) return 'Medium';
+      return 'High';
+    }
+
+    // Initialize UI
+    function init() {
+      renderManufacturers();
+      updateStatistics();
+    }
+
+    // Render manufacturers into their respective grids (pending, verified, rejected)
+    function renderManufacturers() {
+      const pendingMfg = manufacturers.filter(m => m.status === 'Pending');
+      const verifiedMfg = manufacturers.filter(m => m.status === 'Verified');
+      const rejectedMfg = manufacturers.filter(m => m.status === 'Rejected');
+
+      renderGrid('pendingGrid', pendingMfg);
+      renderGrid('verifiedGrid', verifiedMfg);
+      renderGrid('rejectedGrid', rejectedMfg);
+
+      updateVisibility();
+    }
+
+    // Render a list of manufacturer cards into a grid element
+    function renderGrid(gridId, items) {
+      const grid = document.getElementById(gridId);
+      grid.innerHTML = '';
+
+      if (items.length === 0) {
+        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 2rem;">No manufacturers found</p>';
+        return;
+      }
+
+      items.forEach(mfg => {
+        const risk = computeRiskLevel(mfg);
+        const card = document.createElement('div');
+        card.className = `manufacturer-card ${mfg.status.toLowerCase()}`;
+
+        // Include rating, reviews, and risk badge on the card
+        card.innerHTML = `
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">${mfg.companyName}</h3>
+              <div class="company-info">
+                <div class="company-email">${mfg.email}</div>
+                <div class="company-location">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                  </svg>
+                  ${mfg.location}
+                </div>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="margin-bottom: 0.5rem;">
+                <span style="font-weight:700; color:var(--text-primary);">${mfg.rating.toFixed(1)}</span>
+                <span style="color:var(--text-secondary);"> (${mfg.reviews})</span>
+              </div>
+              <span class="badge badge-${mfg.status.toLowerCase()}">${mfg.status}</span>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 1rem;">
+            <div class="info-row">
+              <span class="info-label">Product Category</span>
+              <span class="info-value">${mfg.category}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Documents Uploaded</span>
+              <span class="info-value">${mfg.documentsUploaded}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Risk</span>
+              <span class="info-value">${risk}</span>
+            </div>
+          </div>
+
+          <div class="document-count">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+            ${mfg.documentsUploaded} Documents
+          </div>
+
+          <div class="action-buttons">
+            <!-- View Documents always available -->
+            <button class="btn btn-secondary" onclick="openDocumentModal(${mfg.id})">View Documents</button>
+
+            <!-- Quick approve: available for Pending and Rejected -->
+            ${mfg.status !== 'Verified' ? `<button class="btn btn-success" onclick="quickApprove(${mfg.id})">Approve</button>` : ''}
+
+            <!-- Quick reject: only for Pending (requires notes in modal) -->
+            ${mfg.status === 'Pending' ? `<button class="btn btn-danger" onclick="quickReject(${mfg.id})">Reject</button>` : ''}
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Open Document Modal: shows manufacturer details, list of documents and preview
+    function openDocumentModal(mfgId) {
+      currentManufacturerId = mfgId;
+      const mfg = manufacturers.find(m => m.id === mfgId);
+      if (!mfg) return;
+
+      // Update manufacturer info in modal
+      document.getElementById('modalCompanyName').textContent = mfg.companyName;
+      document.getElementById('modalEmail').textContent = mfg.email;
+      document.getElementById('modalLocation').textContent = mfg.location;
+      document.getElementById('modalCategory').textContent = mfg.category;
+
+      // Show rating and risk in modal header area (reuse modal company name area)
+      // Render documents list
+      const container = document.getElementById('documentsContainer');
+      container.innerHTML = '';
+      mfg.documents.forEach((doc, idx) => {
+        const docEl = document.createElement('div');
+        docEl.className = 'document-item';
+        docEl.innerHTML = `
+          <div class="document-info">
+            <div class="document-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+              </svg>
+            </div>
+            <div class="document-meta">
+              <div class="document-name">${doc.type}</div>
+              <div class="document-date">Uploaded: ${doc.uploadDate}</div>
+            </div>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="previewDocument(${idx})">Preview</button>
+        `;
+        container.appendChild(docEl);
+      });
+
+      // Preview the first document by default
+      if (mfg.documents.length > 0) previewDocument(0);
+
+      // Approve button enabled for Pending or Rejected (allows Rejected -> Approved)
+      const approveBtn = document.getElementById('approveBtn');
+      const rejectBtn = document.getElementById('rejectBtn');
+      if (mfg.status === 'Verified') {
+        approveBtn.disabled = true;
+        rejectBtn.disabled = true;
+      } else {
+        approveBtn.disabled = false;
+        // Reject allowed only from Pending via modal (requires notes)
+        rejectBtn.disabled = (mfg.status !== 'Pending');
+      }
+
+      // Clear notes
+      document.getElementById('verificationNotes').value = '';
+
+      // Show modal
+      document.getElementById('documentModal').classList.add('active');
+    }
+
+    // Simulated document preview: draws a placeholder SVG with document title
+    function previewDocument(docIndex) {
+      const mfg = manufacturers.find(m => m.id === currentManufacturerId);
+      if (!mfg || !mfg.documents[docIndex]) return;
+      const doc = mfg.documents[docIndex];
+      const img = document.getElementById('documentImage');
+      img.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22800%22 viewBox=%220 0 600 800%22%3E%3Crect width=%22600%22 height=%22800%22 fill=%22%23f3f4f6%22/%3E%3Crect x=%2240%22 y=%2240%22 width=%22520%22 height=%22720%22 fill=%22white%22 stroke=%22%23e5e7eb%22 stroke-width=%222%22/%3E%3Ctext x=%22300%22 y=%2280%22 text-anchor=%22middle%22 font-size=%2224%22 font-weight=%22bold%22 fill=%22%231f2937%22%3E' + encodeURIComponent(doc.type) + '%3C/text%3E%3Ctext x=%22300%22 y=%22120%22 text-anchor=%22middle%22 font-size=%2214%22 fill=%22%236b7280%22%3EDocument Preview%3C/text%3E%3Crect x=%2260%22 y=%22160%22 width=%22480%22 height=%22600%22 fill=%22%23e5e7eb%22/%3E%3Ctext x=%22300%22 y=%22480%22 text-anchor=%22middle%22 font-size=%2216%22 fill=%22%239ca3af%22%3E[Document Content]%3C/text%3E%3C/svg%3E';
+    }
+
+    // Close modal and reset current manufacturer
+    function closeDocumentModal() {
+      document.getElementById('documentModal').classList.remove('active');
+      currentManufacturerId = null;
+    }
+
+    // Approve manufacturer (from modal)
+    function approveManufacturer() {
+      const mfg = manufacturers.find(m => m.id === currentManufacturerId);
+      if (!mfg) return;
+      mfg.status = 'Verified';
+      closeDocumentModal();
+      renderManufacturers();
+      updateStatistics();
+      showNotification('Manufacturer approved successfully!', 'success');
+    }
+
+    // Reject manufacturer (from modal) - requires a reason/note
+    function rejectManufacturer() {
+      const notes = document.getElementById('verificationNotes').value;
+      if (!notes.trim()) {
+        alert('Please provide a reason for rejection');
+        return;
+      }
+      const mfg = manufacturers.find(m => m.id === currentManufacturerId);
+      if (!mfg) return;
+      mfg.status = 'Rejected';
+      mfg.rejectionReason = notes;
+      closeDocumentModal();
+      renderManufacturers();
+      updateStatistics();
+      showNotification('Application rejected. Reason has been recorded.', 'error');
+    }
+
+    // Quick approve from card (immediately approves without notes)
+    function quickApprove(id) {
+      if (!confirm('Approve this manufacturer?')) return;
+      const mfg = manufacturers.find(m => m.id === id);
+      if (!mfg) return;
+      mfg.status = 'Verified';
+      renderManufacturers();
+      updateStatistics();
+      showNotification('Manufacturer approved (quick action).', 'success');
+    }
+
+    // Quick reject from card: opens modal and pre-selects this manufacturer so admin can enter reason
+    function quickReject(id) {
+      // open modal to enter rejection reason
+      openDocumentModal(id);
+      // ensure reject button enabled in modal
+      document.getElementById('rejectBtn').disabled = false;
+    }
+
+    // Filter manufacturers by status and toggle active tab styling
+    function filterManufacturers(filter, evt) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+      if (evt && evt.currentTarget) evt.currentTarget.classList.add('active');
+      updateVisibility();
+    }
+
+    // Show/hide sections based on selected filter
+    function updateVisibility() {
+      const pendingSection = document.getElementById('pendingSection');
+      const verifiedSection = document.getElementById('verifiedSection');
+      const rejectedSection = document.getElementById('rejectedSection');
+
+      if (currentFilter === 'all') {
+        pendingSection.style.display = 'block';
+        verifiedSection.style.display = 'block';
+        rejectedSection.style.display = manufacturers.some(m => m.status === 'Rejected') ? 'block' : 'none';
+      } else if (currentFilter === 'pending') {
+        pendingSection.style.display = 'block';
+        verifiedSection.style.display = 'none';
+        rejectedSection.style.display = 'none';
+      } else if (currentFilter === 'verified') {
+        pendingSection.style.display = 'none';
+        verifiedSection.style.display = 'block';
+        rejectedSection.style.display = 'none';
+      } else if (currentFilter === 'rejected') {
+        pendingSection.style.display = 'none';
+        verifiedSection.style.display = 'none';
+        rejectedSection.style.display = 'block';
+      }
+    }
+
+    // Update dashboard statistics
+    function updateStatistics() {
+      const total = manufacturers.length;
+      const verified = manufacturers.filter(m => m.status === 'Verified').length;
+      const pending = manufacturers.filter(m => m.status === 'Pending').length;
+      const rejected = manufacturers.filter(m => m.status === 'Rejected').length;
+
+      document.getElementById('totalCount').textContent = total;
+      document.getElementById('verifiedCount').textContent = verified;
+      document.getElementById('pendingCount').textContent = pending;
+      document.getElementById('rejectedCount').textContent = rejected;
+
+      document.getElementById('pendingCountLabel').textContent = pending + ' pending';
+      document.getElementById('verifiedCountLabel').textContent = verified + ' verified';
+      document.getElementById('rejectedCountLabel').textContent = rejected + ' rejected';
+    }
+
+    // Simple toast notification helper
+    function showNotification(message, type) {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        background: ${type === 'success' ? 'var(--success)' : 'var(--danger)'};
+        color: white;
+        border-radius: 8px;
+        box-shadow: var(--shadow-lg);
+        z-index: 2000;
+        animation: slideUp 0.3s ease;
+      `;
+      notification.textContent = message;
+      document.body.appendChild(notification);
+
+      setTimeout(() => notification.remove(), 3000);
+    }
+
+    // Mock data for supplier performance reports
+    const supplierReports = [
+      { supplier: 'TechPro Manufacturing', orders: 1250, onTime: 92, delay: 8, rating: 4.8, risk: 75, sentiment: 0.89 },
+      { supplier: 'Precision Parts Ltd', orders: 890, onTime: 78, delay: 22, rating: 4.2, risk: 65, sentiment: 0.62 },
+      { supplier: 'Global Textiles Co', orders: 2100, onTime: 95, delay: 5, rating: 4.5, risk: 45, sentiment: 0.78 },
+      { supplier: 'EcoPackaging Group', orders: 650, onTime: 88, delay: 12, rating: 4.9, risk: 55, sentiment: 0.95 },
+      { supplier: 'Advanced Materials Inc', orders: 480, onTime: 72, delay: 28, rating: 3.8, risk: 85, sentiment: 0.48 }
+    ];
+
+    let currentReportsFilter = 'all';
+    let currentSortColumn = null;
+    let currentSortDirection = 'asc';
+
+    // Mock notifications data
+    const notifications = [
+      { id: 1, title: 'New manufacturer registration', message: 'EcoPackaging Group has submitted their application', time: '2 hours ago', type: 'registration', unread: true },
+      { id: 2, title: 'Approval update', message: 'Precision Parts Ltd application approved', time: '4 hours ago', type: 'approval', unread: true },
+      { id: 3, title: 'Risk alert', message: 'Advanced Materials Inc risk score exceeded 80', time: '6 hours ago', type: 'risk', unread: false },
+      { id: 4, title: 'Document rejection', message: 'Business license rejected for TechPro Manufacturing', time: '1 day ago', type: 'rejection', unread: false }
+    ];
+
+    // Alerts data
+    let alerts = [];
+
+    // Session timeout simulation
+    let sessionTimeout = null;
+
+    // Initialize all features
+    function init() {
+      renderManufacturers();
+      updateStatistics();
+      renderReports();
+      renderNotifications();
+      checkAlerts();
+      startSessionTimer();
+    }
+
+    // Toggle status panel
+    function toggleStatusPanel() {
+      const panel = document.getElementById('statusPanel');
+      panel.classList.toggle('show');
+    }
+
+    // Toggle notification dropdown
+    function toggleNotificationDropdown() {
+      const dropdown = document.getElementById('notificationDropdown');
+      dropdown.classList.toggle('show');
+    }
+
+    // Render supplier performance reports
+    function renderReports() {
+      const tbody = document.getElementById('reportsTableBody');
+      tbody.innerHTML = '';
+
+      let filteredReports = supplierReports;
+
+      if (currentReportsFilter === 'high') {
+        filteredReports = supplierReports.filter(r => r.risk >= 70);
+      } else if (currentReportsFilter === 'medium') {
+        filteredReports = supplierReports.filter(r => r.risk >= 60 && r.risk < 70);
+      } else if (currentReportsFilter === 'low') {
+        filteredReports = supplierReports.filter(r => r.risk < 60);
+      }
+
+      // Sort if needed
+      if (currentSortColumn) {
+        filteredReports.sort((a, b) => {
+          let aVal = a[currentSortColumn];
+          let bVal = b[currentSortColumn];
+
+          if (currentSortDirection === 'asc') {
+            return aVal > bVal ? 1 : -1;
+          } else {
+            return aVal < bVal ? 1 : -1;
+          }
+        });
+      }
+
+      filteredReports.forEach(report => {
+        const riskClass = report.risk >= 70 ? 'risk-high' : report.risk >= 60 ? 'risk-medium' : 'risk-low';
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${report.supplier}</td>
+          <td>${report.orders.toLocaleString()}</td>
+          <td>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span>${report.onTime}%</span>
+              <div class="progress-bar">
+                <div class="progress-fill on-time" style="width: ${report.onTime}%"></div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span>${report.delay}%</span>
+              <div class="progress-bar">
+                <div class="progress-fill delay" style="width: ${report.delay}%"></div>
+              </div>
+            </div>
+          </td>
+          <td>${report.rating.toFixed(1)}</td>
+          <td><span class="${riskClass}">${report.risk}</span></td>
+          <td>${report.sentiment.toFixed(2)}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // Filter reports
+    function filterReports(filter) {
+      currentReportsFilter = filter;
+      document.querySelectorAll('.reports-filter').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      renderReports();
+    }
+
+    // Sort table
+    function sortTable(column) {
+      if (currentSortColumn === column) {
+        currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+        currentSortColumn = column;
+        currentSortDirection = 'asc';
+      }
+
+      // Update sort indicators
+      document.querySelectorAll('th').forEach(th => {
+        th.classList.remove('sort-asc', 'sort-desc');
+      });
+
+      const currentTh = document.querySelector(`th[onclick="sortTable('${column}')"]`);
+      currentTh.classList.add(`sort-${currentSortDirection}`);
+
+      renderReports();
+    }
+
+    // Render notifications
+    function renderNotifications() {
+      const dropdown = document.getElementById('notificationDropdown');
+      const unreadCount = notifications.filter(n => n.unread).length;
+
+      document.getElementById('notificationBadge').style.display = unreadCount > 0 ? 'flex' : 'none';
+      document.getElementById('notificationBadge').textContent = unreadCount;
+
+      dropdown.innerHTML = '';
+
+      if (notifications.length === 0) {
+        dropdown.innerHTML = '<div style="padding: 1rem; text-align: center; color: var(--text-secondary);">No notifications</div>';
+        return;
+      }
+
+      notifications.forEach(notification => {
+        const item = document.createElement('div');
+        item.className = `notification-item ${notification.unread ? 'unread' : ''}`;
+        item.onclick = () => markAsRead(notification.id);
+
+        item.innerHTML = `
+          <div class="notification-title">${notification.title}</div>
+          <div class="notification-message">${notification.message}</div>
+          <div class="notification-time">${notification.time}</div>
+        `;
+
+        dropdown.appendChild(item);
+      });
+    }
+
+    // Mark notification as read
+    function markAsRead(id) {
+      const notification = notifications.find(n => n.id === id);
+      if (notification) {
+        notification.unread = false;
+        renderNotifications();
+      }
+    }
+
+    // Check for alerts
+    function checkAlerts() {
+      alerts = [];
+
+      supplierReports.forEach(report => {
+        if (report.risk > 70) {
+          alerts.push({
+            type: 'high-risk',
+            message: `${report.supplier} has high risk score (${report.risk})`,
+            details: `Risk Score: ${report.risk}, Sentiment: ${report.sentiment.toFixed(2)}`
+          });
+        }
+
+        if (report.delay > 40) {
+          alerts.push({
+            type: 'delay',
+            message: `${report.supplier} has high delay percentage (${report.delay}%)`,
+            details: `Delay: ${report.delay}%, On-Time: ${report.onTime}%`
+          });
+        }
+
+        if (report.sentiment < 0.5) {
+          alerts.push({
+            type: 'sentiment',
+            message: `${report.supplier} has negative sentiment (${report.sentiment.toFixed(2)})`,
+            details: `Sentiment Score: ${report.sentiment.toFixed(2)}`
+          });
+        }
+      });
+
+      renderAlerts();
+    }
+
+    // Render alerts
+    function renderAlerts() {
+      const alertList = document.getElementById('alertList');
+      const alertCounter = document.getElementById('alertCounter');
+
+      alertCounter.textContent = alerts.length;
+
+      if (alerts.length === 0) {
+        alertList.innerHTML = '<div style="padding: 1rem; text-align: center; color: var(--text-secondary);">No alerts</div>';
+        document.getElementById('alertPanel').classList.remove('show');
+        return;
+      }
+
+      alertList.innerHTML = '';
+      document.getElementById('alertPanel').classList.add('show');
+
+      alerts.forEach((alert, index) => {
+        const item = document.createElement('div');
+        item.className = `alert-item ${alert.type}`;
+
+        item.innerHTML = `
+          <div class="alert-message">${alert.message}</div>
+          <div class="alert-details">${alert.details}</div>
+          <button class="alert-dismiss" onclick="dismissAlert(${index})">&times;</button>
+        `;
+
+        alertList.appendChild(item);
+      });
+    }
+
+    // Dismiss alert
+    function dismissAlert(index) {
+      alerts.splice(index, 1);
+      renderAlerts();
+    }
+
+    // Start session timer
+    function startSessionTimer() {
+      // Simulate 30 minutes session timeout
+      const timeoutMs = 30 * 60 * 1000; // 30 minutes
+
+      sessionTimeout = setTimeout(() => {
+        document.getElementById('sessionStatus').textContent = 'Expired';
+        document.getElementById('sessionStatus').className = 'badge badge-expired';
+        showNotification('Session expired. Please log in again.', 'error');
+      }, timeoutMs);
+
+      // Update every minute
+      setInterval(() => {
+        if (document.getElementById('sessionStatus').textContent === 'Active') {
+          // Could show countdown here if needed
+        }
+      }, 60000);
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', init);
+
+    // Close modal when clicking outside modal content
+    document.getElementById('documentModal').addEventListener('click', (e) => {
+      if (e.target.id === 'documentModal') closeDocumentModal();
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+      const statusPanel = document.getElementById('statusPanel');
+      const notificationDropdown = document.getElementById('notificationDropdown');
+
+      if (!e.target.closest('.user-info') && statusPanel.classList.contains('show')) {
+        statusPanel.classList.remove('show');
+      }
+
+      if (!e.target.closest('.notification-bell') && notificationDropdown.classList.contains('show')) {
+        notificationDropdown.classList.remove('show');
+      }
+    });
+  </script>
+</body>
+</html>
+>>>>>>> 4e416cdf25dfe1968e342ed951111c4cc02464c2

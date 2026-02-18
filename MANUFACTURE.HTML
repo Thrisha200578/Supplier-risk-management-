@@ -1,0 +1,1861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manufacturer Dashboard - SupplyChain AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        /* TOP NAVIGATION */
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 0 30px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-left {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0066cc;
+        }
+
+        .navbar-center {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .navbar-center a {
+            text-decoration: none;
+            color: #666;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.3s;
+            border-bottom: 3px solid transparent;
+            padding-bottom: 8px;
+        }
+
+        .navbar-center a:hover,
+        .navbar-center a.active {
+            color: #0066cc;
+            border-bottom-color: #0066cc;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .company-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .role-badge {
+            background-color: #e3f2fd;
+            color: #0066cc;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        /* MAIN CONTAINER */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .view-header {
+            margin-bottom: 30px;
+        }
+
+        .view-header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            color: #222;
+        }
+
+        .view-header p {
+            color: #999;
+            font-size: 14px;
+        }
+
+        /* DASHBOARD VIEW */
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        /* Statistics Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            min-width: 50px;
+        }
+
+        .stat-content h3 {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0066cc;
+        }
+
+        .stat-card.risk-high .stat-value {
+            color: #f44336;
+        }
+
+        .stat-card.risk-medium .stat-value {
+            color: #ff9800;
+        }
+
+        .stat-card.risk-low .stat-value {
+            color: #22c55e;
+        }
+
+        /* Documents Section */
+        .documents-section,
+        .reviews-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .documents-section h2,
+        .reviews-section h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #222;
+        }
+
+        .document-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .document-input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .document-input-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .document-input-group input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .document-input-group input:focus {
+            outline: none;
+            border-color: #0066cc;
+        }
+
+        .upload-button {
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .upload-button:hover {
+            background-color: #0052a3;
+        }
+
+        .upload-success {
+            background-color: #e8f5e9;
+            border-left: 4px solid #22c55e;
+            padding: 12px 16px;
+            border-radius: 6px;
+            color: #2e7d32;
+            font-size: 13px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .upload-success.show {
+            display: block;
+        }
+
+        /* Reviews Section */
+        .reviews-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .review-item {
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .review-item:hover {
+            background-color: #fafafa;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .review-stars {
+            color: #ffc107;
+            font-size: 14px;
+        }
+
+        .review-date {
+            color: #999;
+            font-size: 12px;
+        }
+
+        .review-product {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .review-text {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* ORDERS TABLE */
+        .orders-table-container {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow-x: auto;
+        }
+
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .orders-table th {
+            background-color: #f5f7fa;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #666;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .orders-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .orders-table tbody tr:hover {
+            background-color: #fafafa;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pending {
+            background-color: #fff3e0;
+            color: #e65100;
+        }
+
+        .status-packed {
+            background-color: #e3f2fd;
+            color: #0066cc;
+        }
+
+        .status-shipped {
+            background-color: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .status-delivered {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .view-btn {
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            transition: background-color 0.3s;
+        }
+
+        .view-btn:hover {
+            background-color: #0052a3;
+        }
+
+        /* ADS VIEW */
+        .ads-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .create-ad-btn {
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .create-ad-btn:hover {
+            background-color: #0052a3;
+        }
+
+        .ads-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .ad-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .ad-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .ad-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .ad-card h3 {
+            font-size: 16px;
+            color: #222;
+            margin: 0;
+        }
+
+        .ad-status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .ad-status-active {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .ad-status-inactive {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .ad-description {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .ad-date {
+            color: #999;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        .ad-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .ad-action-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 70px;
+        }
+
+        .ad-toggle-btn {
+            background-color: #e3f2fd;
+            color: #0066cc;
+        }
+
+        .ad-toggle-btn:hover {
+            background-color: #0066cc;
+            color: white;
+        }
+
+        .ad-delete-btn {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .ad-delete-btn:hover {
+            background-color: #c62828;
+            color: white;
+        }
+
+        /* CREATE AD MODAL */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 500;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            position: relative;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            color: #222;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #0066cc;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+
+        .btn-submit {
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-submit:hover {
+            background-color: #0052a3;
+        }
+
+        .btn-cancel {
+            background-color: #f0f0f0;
+            color: #333;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-cancel:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* ORDER DETAILS MODAL */
+        .order-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 500;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .order-modal-overlay.active {
+            display: flex;
+        }
+
+        .order-modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.3s ease-out;
+            margin: auto;
+        }
+
+        .order-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .order-modal-header h2 {
+            font-size: 20px;
+            color: #222;
+            margin: 0;
+        }
+
+        .order-modal-body {
+            padding: 25px;
+        }
+
+        /* Status Timeline */
+        .status-timeline {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .status-timeline::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #eee;
+            z-index: 0;
+        }
+
+        .timeline-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .timeline-circle {
+            width: 40px;
+            height: 40px;
+            background-color: #f0f0f0;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+
+        .timeline-step.active .timeline-circle {
+            background-color: #0066cc;
+            border-color: #0066cc;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .timeline-step.completed .timeline-circle {
+            background-color: #22c55e;
+            border-color: #22c55e;
+            color: white;
+        }
+
+        .timeline-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .timeline-step.active .timeline-label {
+            color: #0066cc;
+        }
+
+        .timeline-step.completed .timeline-label {
+            color: #22c55e;
+        }
+
+        /* Order Details Grid */
+        .order-details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* Shipment Form */
+        .shipment-form {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .shipment-form.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .shipment-form h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #222;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group-inline {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group-inline label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group-inline input,
+        .form-group-inline select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-group-inline input:focus,
+        .form-group-inline select:focus {
+            outline: none;
+            border-color: #0066cc;
+        }
+
+        .form-actions-inline {
+            display: flex;
+            gap: 10px;
+        }
+
+        .form-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .form-btn.submit {
+            background-color: #0066cc;
+            color: white;
+        }
+
+        .form-btn.submit:hover {
+            background-color: #0052a3;
+        }
+
+        .form-btn.cancel {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .form-btn.cancel:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* Order Actions */
+        .order-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .order-action-btn {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .order-action-btn.primary {
+            background-color: #0066cc;
+            color: white;
+        }
+
+        .order-action-btn.primary:hover {
+            background-color: #0052a3;
+        }
+
+        .order-action-btn.secondary {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .order-action-btn.secondary:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 400px;
+        }
+
+        .toast {
+            background: white;
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideInRight 0.3s ease-out;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
+        .toast.removing {
+            animation: slideOutRight 0.3s ease-out forwards;
+        }
+
+        .toast-icon {
+            font-size: 18px;
+            font-weight: bold;
+            min-width: 20px;
+        }
+
+        .toast.success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .toast.success .toast-icon {
+            color: #22c55e;
+        }
+
+        .toast.error {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .toast.error .toast-icon {
+            color: #f44336;
+        }
+
+        .toast.info {
+            background-color: #e3f2fd;
+            color: #0066cc;
+        }
+
+        .toast.info .toast-icon {
+            color: #0066cc;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0 15px;
+            }
+
+            .navbar-center {
+                gap: 15px;
+            }
+
+            .navbar-right {
+                gap: 10px;
+                font-size: 12px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ads-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .order-details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .status-timeline {
+                flex-direction: column;
+            }
+
+            .status-timeline::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 20px;
+                width: 2px;
+                height: 100%;
+                background-color: #eee;
+            }
+
+            .timeline-step {
+                margin-bottom: 20px;
+                text-align: left;
+            }
+
+            .timeline-circle {
+                margin: 0 0 10px 0;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                width: 95%;
+            }
+
+            .order-modal-content {
+                max-width: 95%;
+            }
+
+            .orders-table {
+                font-size: 12px;
+            }
+
+            .orders-table th,
+            .orders-table td {
+                padding: 10px;
+            }
+
+            .toast-container {
+                width: calc(100% - 40px);
+                left: 20px;
+                right: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar {
+                height: auto;
+                flex-wrap: wrap;
+                padding: 10px 15px;
+            }
+
+            .navbar-center {
+                gap: 10px;
+                flex-basis: 100%;
+                margin-top: 10px;
+                order: 3;
+            }
+
+            .navbar-center a {
+                font-size: 12px;
+                padding-bottom: 5px;
+            }
+
+            .view-header h1 {
+                font-size: 20px;
+            }
+
+            .stat-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .documents-section,
+            .reviews-section {
+                padding: 15px;
+            }
+
+            .document-inputs {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .form-actions button {
+                width: 100%;
+            }
+
+            .ad-actions {
+                flex-direction: column;
+            }
+
+            .ad-action-btn {
+                min-width: unset;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- TOP NAVIGATION -->
+    <nav class="navbar">
+        <div class="navbar-left">📦 SupplyChain AI</div>
+        <div class="navbar-center">
+            <a href="#" class="nav-link active" data-view="dashboard">Dashboard</a>
+            <a href="#" class="nav-link" data-view="orders">Orders</a>
+            <a href="#" class="nav-link" data-view="ads">Ads</a>
+        </div>
+        <div class="navbar-right">
+            <span class="company-name">TechSupply Co.</span>
+            <span class="role-badge">Manufacturer</span>
+            <button class="logout-btn" title="Logout">⎙</button>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container">
+        <!-- DASHBOARD VIEW -->
+        <div id="dashboard" class="view active">
+            <div class="view-header">
+                <h1>Manufacturer Dashboard</h1>
+                <p>TechSupply Co.</p>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📦</div>
+                    <div class="stat-content">
+                        <h3>Total Orders</h3>
+                        <div class="stat-value">245</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-content">
+                        <h3>Average Rating</h3>
+                        <div class="stat-value">4.8 / 5</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💬</div>
+                    <div class="stat-content">
+                        <h3>Total Reviews</h3>
+                        <div class="stat-value">156</div>
+                    </div>
+                </div>
+                <div class="stat-card risk-low">
+                    <div class="stat-icon">⚠️</div>
+                    <div class="stat-content">
+                        <h3>Risk Level</h3>
+                        <div class="stat-value">Low</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Legal & Factory Documents Section -->
+            <div class="documents-section">
+                <h2>Legal & Factory Documents</h2>
+                <div class="document-inputs">
+                    <div class="document-input-group">
+                        <label>Business License</label>
+                        <input type="file" accept=".pdf,.doc,.docx" />
+                    </div>
+                    <div class="document-input-group">
+                        <label>Factory Certification</label>
+                        <input type="file" accept=".pdf,.doc,.docx" />
+                    </div>
+                    <div class="document-input-group">
+                        <label>Quality Certificates</label>
+                        <input type="file" accept=".pdf,.doc,.docx" />
+                    </div>
+                    <div class="document-input-group">
+                        <label>Insurance Documents</label>
+                        <input type="file" accept=".pdf,.doc,.docx" />
+                    </div>
+                </div>
+                <button class="upload-button" id="uploadDocsBtn">Upload Documents</button>
+                <div class="upload-success" id="uploadSuccess">✓ Documents uploaded successfully!</div>
+            </div>
+
+            <!-- Recent Reviews Section -->
+            <div class="reviews-section">
+                <h2>Recent Reviews</h2>
+                <div class="reviews-list">
+                    <div class="review-item">
+                        <div class="review-header">
+                            <span class="review-stars">⭐⭐⭐⭐⭐</span>
+                            <span class="review-date">Jan 28, 2025</span>
+                        </div>
+                        <div class="review-product">Steel Components - Order #101</div>
+                        <div class="review-text">Excellent quality and timely delivery. The components met all our specifications perfectly.</div>
+                    </div>
+                    <div class="review-item">
+                        <div class="review-header">
+                            <span class="review-stars">⭐⭐⭐⭐</span>
+                            <span class="review-date">Jan 25, 2025</span>
+                        </div>
+                        <div class="review-product">Plastic Injection Parts - Order #98</div>
+                        <div class="review-text">Good manufacturing standards. Minor cosmetic issues on some units.</div>
+                    </div>
+                    <div class="review-item">
+                        <div class="review-header">
+                            <span class="review-stars">⭐⭐⭐⭐⭐</span>
+                            <span class="review-date">Jan 22, 2025</span>
+                        </div>
+                        <div class="review-product">Metal Fasteners - Order #95</div>
+                        <div class="review-text">Outstanding quality control. Supplied well ahead of schedule. Highly recommended!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ORDERS VIEW -->
+        <div id="orders" class="view">
+            <div class="view-header">
+                <h1>Order Management</h1>
+                <p>View and manage your orders</p>
+            </div>
+
+            <div class="orders-table-container">
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Product Name</th>
+                            <th>Quantity</th>
+                            <th>Order Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ADS VIEW -->
+        <div id="ads" class="view">
+            <div class="ads-header">
+                <div class="view-header" style="margin-bottom: 0;">
+                    <h1>Advertising</h1>
+                    <p>Create and manage your ads</p>
+                </div>
+                <button class="create-ad-btn" id="createAdBtn">+ Create Ad</button>
+            </div>
+
+            <div class="ads-grid" id="adsGrid">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- CREATE AD MODAL -->
+    <div id="createAdModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create New Ad</h2>
+                <button class="modal-close" onclick="closeCreateAdModal()">✕</button>
+            </div>
+            <form id="createAdForm" onsubmit="handleCreateAd(event)">
+                <div class="form-group">
+                    <label>Ad Title</label>
+                    <input type="text" id="adTitle" required placeholder="e.g., Premium Steel Components" />
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="adDescription" required placeholder="Describe your product or service..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Offer / Discount</label>
+                    <input type="text" id="adOffer" placeholder="e.g., 15% off for bulk orders" />
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" onclick="closeCreateAdModal()">Cancel</button>
+                    <button type="submit" class="btn-submit">Create Ad</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ORDER DETAILS MODAL -->
+    <div id="orderDetailsModal" class="order-modal-overlay">
+        <div class="order-modal-content">
+            <div class="order-modal-header">
+                <h2 id="modalOrderId">Order Details</h2>
+                <button class="modal-close" onclick="closeOrderModal()">✕</button>
+            </div>
+            <div class="order-modal-body">
+                <!-- Status Timeline -->
+                <div id="statusTimeline" class="status-timeline">
+                    <!-- Populated by JavaScript -->
+                </div>
+
+                <!-- Order Details Grid -->
+                <div id="orderDetailsGrid" class="order-details-grid">
+                    <!-- Populated by JavaScript -->
+                </div>
+
+                <!-- Shipment Form -->
+                <div id="shipmentForm" class="shipment-form">
+                    <h3>Shipment Details</h3>
+                    <div class="form-grid">
+                        <div class="form-group-inline">
+                            <label>Courier Partner</label>
+                            <select id="courierSelect">
+                                <option value="">Select Courier...</option>
+                                <option value="FedEx">FedEx</option>
+                                <option value="DHL">DHL</option>
+                                <option value="UPS">UPS</option>
+                                <option value="LocalExpress">Local Express</option>
+                            </select>
+                        </div>
+                        <div class="form-group-inline">
+                            <label>Tracking ID</label>
+                            <input type="text" id="trackingInput" placeholder="e.g., FDX987654321" />
+                        </div>
+                    </div>
+                    <div class="form-group-inline">
+                        <label>Estimated Delivery Date</label>
+                        <input type="date" id="deliveryDateInput" />
+                    </div>
+                    <div class="form-actions-inline">
+                        <button class="form-btn cancel" onclick="cancelShipmentForm()">Cancel</button>
+                        <button class="form-btn submit" onclick="submitShipmentForm()">Submit Shipment</button>
+                    </div>
+                </div>
+
+                <!-- Order Actions -->
+                <div id="orderActions" class="order-actions">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script>
+        // APPLICATION STATE
+        const appState = {
+            currentView: 'dashboard',
+            orders: [
+                {
+                    id: 'ORD-001',
+                    product: 'Steel Components',
+                    quantity: 500,
+                    date: '2025-01-20',
+                    status: 'Pending',
+                    buyerName: 'StarTech Industries',
+                    deliveryAddress: '123 Industrial Ave, Chicago, IL 60601',
+                    courier: null,
+                    trackingId: null,
+                    estimatedDelivery: null
+                },
+                {
+                    id: 'ORD-002',
+                    product: 'Plastic Injection Parts',
+                    quantity: 1200,
+                    date: '2025-01-18',
+                    status: 'Packed',
+                    buyerName: 'AutoMaker Ltd',
+                    deliveryAddress: '456 Manufacturing Way, Detroit, MI 48201',
+                    courier: null,
+                    trackingId: null,
+                    estimatedDelivery: null
+                },
+                {
+                    id: 'ORD-003',
+                    product: 'Metal Fasteners',
+                    quantity: 5000,
+                    date: '2025-01-15',
+                    status: 'Shipped',
+                    buyerName: 'BuildCorp Inc',
+                    deliveryAddress: '789 Construction Blvd, Houston, TX 77001',
+                    courier: 'FedEx',
+                    trackingId: 'FDX987654321',
+                    estimatedDelivery: '2025-02-05'
+                },
+                {
+                    id: 'ORD-004',
+                    product: 'Electronic Components',
+                    quantity: 800,
+                    date: '2025-01-10',
+                    status: 'Delivered',
+                    buyerName: 'TechExperts Co',
+                    deliveryAddress: '321 Innovation Drive, San Jose, CA 95110',
+                    courier: 'UPS',
+                    trackingId: 'UPS123456789',
+                    estimatedDelivery: '2025-01-25'
+                },
+                {
+                    id: 'ORD-005',
+                    product: 'Rubber Seals',
+                    quantity: 2500,
+                    date: '2025-01-22',
+                    status: 'Pending',
+                    buyerName: 'IndustrialPartners',
+                    deliveryAddress: '654 Factory Road, Cleveland, OH 44101',
+                    courier: null,
+                    trackingId: null,
+                    estimatedDelivery: null
+                }
+            ],
+            ads: [
+                {
+                    id: 1,
+                    title: 'Premium Steel Components',
+                    description: 'High-grade steel components manufactured to ISO standards. Perfect for automotive and industrial applications.',
+                    offer: '10% discount for orders above 1000 units',
+                    date: '2025-01-25',
+                    active: true
+                },
+                {
+                    id: 2,
+                    title: 'Custom Plastic Parts',
+                    description: 'Precision injection-molded plastic parts. Custom designs welcome. Fast turnaround available.',
+                    offer: 'Free design consultation',
+                    date: '2025-01-23',
+                    active: true
+                }
+            ]
+        };
+
+        let currentOpenOrder = null;
+
+        // NAVIGATION
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const viewName = e.target.dataset.view;
+                switchView(viewName);
+            });
+        });
+
+        function switchView(viewName) {
+            // Update active navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelector(`[data-view="${viewName}"]`).classList.add('active');
+
+            // Update active view
+            document.querySelectorAll('.view').forEach(view => {
+                view.classList.remove('active');
+            });
+            document.getElementById(viewName).classList.add('active');
+            appState.currentView = viewName;
+
+            // Render content for specific views
+            if (viewName === 'orders') {
+                renderOrdersTable();
+            } else if (viewName === 'ads') {
+                renderAdsGrid();
+            }
+        }
+
+        // DASHBOARD: UPLOAD DOCUMENTS
+        document.getElementById('uploadDocsBtn').addEventListener('click', () => {
+            const successMsg = document.getElementById('uploadSuccess');
+            successMsg.classList.add('show');
+            setTimeout(() => {
+                successMsg.classList.remove('show');
+            }, 3000);
+        });
+
+        // ORDERS VIEW
+        function renderOrdersTable() {
+            const tbody = document.getElementById('ordersTableBody');
+            tbody.innerHTML = appState.orders.map(order => `
+                <tr>
+                    <td>${order.id}</td>
+                    <td>${order.product}</td>
+                    <td>${order.quantity}</td>
+                    <td>${order.date}</td>
+                    <td><span class="status-badge status-${order.status.toLowerCase()}">${order.status}</span></td>
+                    <td><button class="view-btn" onclick="viewOrder('${order.id}')">View</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function viewOrder(orderId) {
+            const order = appState.orders.find(o => o.id === orderId);
+            if (order) {
+                openOrderDetailsModal(order);
+            }
+        }
+
+        function openOrderDetailsModal(order) {
+            currentOpenOrder = order;
+            
+            // Update modal header
+            document.getElementById('modalOrderId').textContent = `${order.id} - Order Details`;
+            
+            // Render status timeline
+            renderStatusTimeline(order.status);
+            
+            // Render order details
+            renderOrderDetails(order);
+            
+            // Render action buttons
+            renderOrderActions(order.status);
+            
+            // Show modal
+            document.getElementById('orderDetailsModal').classList.add('active');
+        }
+
+        function closeOrderModal() {
+            document.getElementById('orderDetailsModal').classList.remove('active');
+            currentOpenOrder = null;
+            document.getElementById('shipmentForm').classList.remove('show');
+        }
+
+        function renderStatusTimeline(currentStatus) {
+            const statuses = ['Pending', 'Packed', 'Shipped', 'Delivered'];
+            const statusEmojis = {
+                'Pending': '📦',
+                'Packed': '📦',
+                'Shipped': '🚚',
+                'Delivered': '✓'
+            };
+            
+            const timelineHtml = statuses.map((status, index) => {
+                const isActive = status === currentStatus;
+                const isCompleted = statuses.indexOf(currentStatus) > index;
+                const stepClass = isActive ? 'active' : (isCompleted ? 'completed' : '');
+                
+                return `
+                    <div class="timeline-step ${stepClass}">
+                        <div class="timeline-circle">${statusEmojis[status]}</div>
+                        <div class="timeline-label">${status}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            document.getElementById('statusTimeline').innerHTML = timelineHtml;
+        }
+
+        function renderOrderDetails(order) {
+            const detailsHtml = `
+                <div class="detail-item">
+                    <div class="detail-label">Order ID</div>
+                    <div class="detail-value">${order.id}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Product</div>
+                    <div class="detail-value">${order.product}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Quantity</div>
+                    <div class="detail-value">${order.quantity} units</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Order Date</div>
+                    <div class="detail-value">${order.date}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Buyer Name</div>
+                    <div class="detail-value">${order.buyerName}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Delivery Address</div>
+                    <div class="detail-value">${order.deliveryAddress}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Current Status</div>
+                    <div class="detail-value"><span class="status-badge status-${order.status.toLowerCase()}">${order.status}</span></div>
+                </div>
+                ${order.status === 'Shipped' || order.status === 'Delivered' ? `
+                <div class="detail-item">
+                    <div class="detail-label">Courier Partner</div>
+                    <div class="detail-value">${order.courier || '—'}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Tracking ID</div>
+                    <div class="detail-value">${order.trackingId || '—'}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Est. Delivery</div>
+                    <div class="detail-value">${order.estimatedDelivery || '—'}</div>
+                </div>
+                ` : ''}
+            `;
+            
+            document.getElementById('orderDetailsGrid').innerHTML = detailsHtml;
+        }
+
+        function renderOrderActions(status) {
+            let actionsHtml = '';
+            
+            if (status === 'Pending') {
+                actionsHtml = '<button class="order-action-btn primary" onclick="transitionOrderStatus(\'Packed\')">✓ Mark as Packed</button>';
+            } else if (status === 'Packed') {
+                actionsHtml = '<button class="order-action-btn primary" onclick="showShipmentForm()">🚚 Ship Order</button>';
+            } else if (status === 'Shipped') {
+                actionsHtml = '<button class="order-action-btn primary" onclick="transitionOrderStatus(\'Delivered\')">✓ Mark as Delivered</button>';
+            } else if (status === 'Delivered') {
+                actionsHtml = '<button class="order-action-btn primary" disabled>✓ Order Complete</button>';
+            }
+            
+            // Add close button always
+            actionsHtml += '<button class="order-action-btn secondary" onclick="closeOrderModal()">Close</button>';
+            
+            document.getElementById('orderActions').innerHTML = actionsHtml;
+        }
+
+        function transitionOrderStatus(newStatus) {
+            if (currentOpenOrder) {
+                currentOpenOrder.status = newStatus;
+                
+                // Find and update in appState
+                const orderIndex = appState.orders.findIndex(o => o.id === currentOpenOrder.id);
+                if (orderIndex !== -1) {
+                    appState.orders[orderIndex] = currentOpenOrder;
+                }
+                
+                // Update modal UI
+                renderStatusTimeline(newStatus);
+                renderOrderDetails(currentOpenOrder);
+                renderOrderActions(newStatus);
+                
+                // Update table
+                renderOrdersTable();
+                
+                // Show notification with proper format
+                const statusMessages = {
+                    'Packed': 'marked as Packed',
+                    'Delivered': 'marked as Delivered'
+                };
+                const message = statusMessages[newStatus] || `updated to ${newStatus}`;
+                showToast(`Order ${currentOpenOrder.id} ${message}`, 'success');
+            }
+        }
+
+        function showShipmentForm() {
+            document.getElementById('shipmentForm').classList.add('show');
+        }
+
+        function cancelShipmentForm() {
+            document.getElementById('shipmentForm').classList.remove('show');
+            document.getElementById('courierSelect').value = '';
+            document.getElementById('trackingInput').value = '';
+            document.getElementById('deliveryDateInput').value = '';
+        }
+
+        function submitShipmentForm() {
+            const courier = document.getElementById('courierSelect').value;
+            const trackingId = document.getElementById('trackingInput').value;
+            const deliveryDate = document.getElementById('deliveryDateInput').value;
+            
+            if (!courier || !trackingId || !deliveryDate) {
+                showToast('Please fill all shipment details', 'error');
+                return;
+            }
+            
+            if (currentOpenOrder) {
+                currentOpenOrder.courier = courier;
+                currentOpenOrder.trackingId = trackingId;
+                currentOpenOrder.estimatedDelivery = deliveryDate;
+                currentOpenOrder.status = 'Shipped';
+                
+                // Update in appState
+                const orderIndex = appState.orders.findIndex(o => o.id === currentOpenOrder.id);
+                if (orderIndex !== -1) {
+                    appState.orders[orderIndex] = currentOpenOrder;
+                }
+                
+                // Update modal UI
+                renderStatusTimeline('Shipped');
+                renderOrderDetails(currentOpenOrder);
+                renderOrderActions('Shipped');
+                cancelShipmentForm();
+                
+                // Update table
+                renderOrdersTable();
+                
+                showToast(`Order ${currentOpenOrder.id} shipped successfully with ${courier}!`, 'success');
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icons = {
+                'success': '✓',
+                'error': '✕',
+                'info': 'ℹ'
+            };
+            
+            toast.innerHTML = `
+                <div class="toast-icon">${icons[type]}</div>
+                <div class="toast-message">${message}</div>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('removing');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // ADS VIEW
+        function renderAdsGrid() {
+            const grid = document.getElementById('adsGrid');
+            grid.innerHTML = appState.ads.map(ad => `
+                <div class="ad-card">
+                    <div class="ad-card-header">
+                        <h3>${ad.title}</h3>
+                        <span class="ad-status-badge ad-status-${ad.active ? 'active' : 'inactive'}">
+                            ${ad.active ? 'Active' : 'Inactive'}
+                        </span>
+                    </div>
+                    <div class="ad-description">${ad.description}</div>
+                    <div class="ad-date">Created: ${ad.date}</div>
+                    <div class="ad-actions">
+                        <button class="ad-action-btn ad-toggle-btn" onclick="toggleAdStatus(${ad.id})">
+                            ${ad.active ? '⊗ Deactivate' : '✓ Activate'}
+                        </button>
+                        <button class="ad-action-btn ad-delete-btn" onclick="deleteAd(${ad.id})">🗑 Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleAdStatus(adId) {
+            const ad = appState.ads.find(a => a.id === adId);
+            if (ad) {
+                ad.active = !ad.active;
+                renderAdsGrid();
+                showToast(`Ad "${ad.title}" ${ad.active ? 'activated' : 'deactivated'}`, 'info');
+            }
+        }
+
+        function deleteAd(adId) {
+            const adIndex = appState.ads.findIndex(a => a.id === adId);
+            if (adIndex !== -1) {
+                const adTitle = appState.ads[adIndex].title;
+                appState.ads.splice(adIndex, 1);
+                renderAdsGrid();
+                showToast(`Ad "${adTitle}" deleted`, 'success');
+            }
+        }
+
+        // CREATE AD MODAL
+        document.getElementById('createAdBtn').addEventListener('click', () => {
+            document.getElementById('createAdModal').classList.add('active');
+        });
+
+        function closeCreateAdModal() {
+            document.getElementById('createAdModal').classList.remove('active');
+            document.getElementById('createAdForm').reset();
+        }
+
+        function handleCreateAd(event) {
+            event.preventDefault();
+            
+            const title = document.getElementById('adTitle').value;
+            const description = document.getElementById('adDescription').value;
+            const offer = document.getElementById('adOffer').value;
+            
+            const newAd = {
+                id: Math.max(...appState.ads.map(a => a.id), 0) + 1,
+                title,
+                description,
+                offer,
+                date: new Date().toISOString().split('T')[0],
+                active: true
+            };
+            
+            appState.ads.push(newAd);
+            renderAdsGrid();
+            closeCreateAdModal();
+            showToast(`Ad "${title}" created successfully!`, 'success');
+        }
+
+        // MODAL OVERLAY CLICK TO CLOSE
+        window.addEventListener('click', (event) => {
+            const createAdModal = document.getElementById('createAdModal');
+            const orderModal = document.getElementById('orderDetailsModal');
+            
+            if (event.target === createAdModal) {
+                closeCreateAdModal();
+            }
+            if (event.target === orderModal) {
+                closeOrderModal();
+            }
+        });
+
+        // INITIAL RENDER
+        renderOrdersTable();
+        renderAdsGrid();
+    </script>
+</body>
+</html>
