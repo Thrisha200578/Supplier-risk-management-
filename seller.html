@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SupplyChain AI - Seller Dashboard</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
+            color: #333;
+            line-height: 1.6;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        nav {
+            background: white;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2563eb;
+        }
+        .nav-tabs {
+            display: flex;
+            gap: 2rem;
+        }
+        .nav-tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s;
+        }
+        .nav-tab.active {
+            background-color: #dbeafe;
+            color: #2563eb;
+            font-weight: bold;
+        }
+        .nav-tab:hover {
+            background-color: #f3f4f6;
+        }
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .user-badge {
+            background: #dbeafe;
+            color: #2563eb;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+        }
+        .logout {
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s;
+        }
+        .logout:hover {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(248,250,252,0.6) 100%);
+            border-radius: 1rem;
+            margin: 1rem 0;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .section.active {
+            display: block;
+            animation: sectionFadeIn 0.6s ease-out;
+        }
+        @keyframes sectionFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Dashboard */
+        .dashboard h1 {
+            margin-bottom: 0.5rem;
+        }
+        .dashboard p {
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+        .feature-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        .card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+            animation: slideInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .card:hover::before {
+            opacity: 1;
+        }
+        .card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 16px 32px rgba(0,0,0,0.12), 0 0 0 1px rgba(37, 99, 235, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #2563eb;
+            background: rgba(37, 99, 235, 0.1);
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card h3 {
+            margin-bottom: 0.5rem;
+        }
+        .card p {
+            color: #6b7280;
+        }
+
+        /* Search */
+        .search-section h1 {
+            margin-bottom: 1rem;
+        }
+        .search-controls {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            transition: box-shadow 0.3s;
+        }
+        .search-controls:hover {
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+        .search-inputs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+        }
+        .file-input {
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+        }
+        .sort-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .sort-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #d1d5db;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .sort-btn.active {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+        .sort-btn:hover {
+            background: #f3f4f6;
+        }
+        .manufacturer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .manufacturer-card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        .manufacturer-card:hover {
+            transform: translateY(-2px);
+        }
+        .manufacturer-name {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .manufacturer-location {
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+        .sentiment {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .sentiment.very-positive { background: #dcfce7; color: #166534; }
+        .sentiment.positive { background: #dbeafe; color: #1e40af; }
+        .sentiment.neutral { background: #fef3c7; color: #92400e; }
+        .risk {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .risk.low { background: #dcfce7; color: #166534; }
+        .risk.medium { background: #fef3c7; color: #92400e; }
+        .risk.high { background: #fee2e2; color: #dc2626; }
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            margin-bottom: 1rem;
+        }
+        .tag {
+            background: #f3f4f6;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+        }
+        .card-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            position: relative;
+        }
+        .btn::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #374151;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 10;
+        }
+        .btn:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        /* Orders */
+        .orders-section h1 {
+            margin-bottom: 1rem;
+        }
+        .order-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .summary-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .summary-card:hover::before {
+            opacity: 1;
+        }
+        .summary-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+        .summary-card h3 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .order-history {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: box-shadow 0.3s;
+        }
+        .order-history:hover {
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+        .order-item {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .order-title {
+            font-weight: bold;
+        }
+        .order-id {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        .order-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .order-info {
+            flex: 1;
+        }
+        .status {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+            cursor: default;
+        }
+        .status.delivered { background: #dcfce7; color: #166534; }
+        .status.in-transit { background: #fef3c7; color: #92400e; }
+        .status.pending { background: #e5e7eb; color: #374151; }
+        .status.packed { background: #dbeafe; color: #1e40af; }
+        .status.shipped { background: #fef3c7; color: #92400e; }
+        .status-readonly {
+            cursor: default !important;
+        }
+        .helper-text {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        .seller-view-only {
+            font-size: 0.75rem;
+            color: #6b7280;
+            font-style: italic;
+            margin-top: 0.25rem;
+        }
+        .last-updated {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        .delivery-info-note {
+            font-size: 0.75rem;
+            color: #6b7280;
+            font-style: italic;
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        /* Order Details Modal */
+        .order-modal-content {
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .order-details {
+            margin-bottom: 1.5rem;
+        }
+        .order-details h3 {
+            margin-bottom: 1rem;
+            color: #2563eb;
+            font-size: 1.25rem;
+        }
+        .order-details-grid {
+            display: grid;
+            grid-template-columns: minmax(120px, auto) 1fr;
+            gap: 0.75rem 1rem;
+            align-items: start;
+        }
+        .detail-row {
+            display: contents;
+        }
+        .label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-weight: 500;
+            text-align: right;
+            padding-right: 0.5rem;
+        }
+        .value {
+            font-size: 1rem;
+            color: #333;
+            font-weight: 400;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        @media (max-width: 768px) {
+            .order-details-grid {
+                grid-template-columns: 1fr;
+                gap: 0.25rem;
+            }
+            .label {
+                text-align: left;
+                font-weight: 600;
+            }
+        }
+        .status-timeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 0.5rem;
+        }
+        .timeline-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+        }
+        .timeline-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 1rem;
+            left: 50%;
+            width: calc(100% - 2rem);
+            height: 2px;
+            background: #d1d5db;
+            z-index: 1;
+        }
+        .timeline-step.completed::after {
+            background: #10b981;
+        }
+        .timeline-icon {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+            background: #d1d5db;
+            color: white;
+        }
+        .timeline-step.completed .timeline-icon {
+            background: #10b981;
+        }
+        .timeline-step.current .timeline-icon {
+            background: #2563eb;
+        }
+        .timeline-label {
+            font-size: 0.75rem;
+            text-align: center;
+            color: #6b7280;
+        }
+        .timeline-step.completed .timeline-label {
+            color: #10b981;
+            font-weight: bold;
+        }
+        .timeline-step.current .timeline-label {
+            color: #2563eb;
+            font-weight: bold;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .shipment-form {
+            display: none;
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .shipment-form.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 0.75rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.25rem;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 2000;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .toast.error {
+            background: #ef4444;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            max-width: 500px;
+            width: 90%;
+        }
+        .modal h2 {
+            margin-bottom: 1rem;
+        }
+        .rating-stars {
+            display: flex;
+            gap: 0.25rem;
+            margin-bottom: 1rem;
+        }
+        .star {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #d1d5db;
+        }
+        .star.active {
+            color: #fbbf24;
+        }
+        .review-text {
+            width: 100%;
+            height: 100px;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            resize: vertical;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .nav-tabs {
+                order: 3;
+                width: 100%;
+                justify-content: center;
+            }
+            .search-inputs {
+                flex-direction: column;
+            }
+            .manufacturer-grid {
+                grid-template-columns: 1fr;
+            }
+            .order-details {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+        }
+
+        /* bbEnh minimal styles */
+        #bbEnh_messagingPanel .message-bubble { padding:0.5rem 0.75rem;border-radius:8px;margin-bottom:0.5rem;max-width:80%; }
+        #bbEnh_messagingPanel .from-seller { background:#dbeafe;color:#0f172a;margin-left:auto; }
+        #bbEnh_messagingPanel .from-manufacturer { background:#f3f4f6;color:#0f172a;margin-right:auto; }
+        /* Timeline visual inside order details */
+        .bbEnh_orderDetails { padding:0.6rem; }
+        .bbEnh_timeline { display:flex;align-items:center;gap:8px;margin-top:0.6rem; }
+        .bbEnh_step { width:12px;height:12px;border-radius:50%;border:2px solid #cbd5e1;background:transparent;position:relative; }
+        .bbEnh_step.completed { background:linear-gradient(90deg,#2563eb,#10b981);border-color:transparent; }
+        .bbEnh_connector { flex:1;height:2px;background:#e6e9ef;border-radius:2px; }
+        @media (max-width: 600px) {
+            #bbEnh_messagingPanel { width:100%;right:-100%; height:48%; bottom:0; top:auto;border-radius:8px 8px 0 0; }
+            #bbEnh_notifDropdown { right:8px; left:auto; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="logo">SupplyChain AI</div>
+            <div class="nav-tabs">
+                <div class="nav-tab active" data-tab="dashboard">Dashboard</div>
+                <div class="nav-tab" data-tab="search">Search</div>
+                <div class="nav-tab" data-tab="orders">Orders</div>
+            </div>
+            <div class="nav-right">
+                <div class="nav-notif">
+                    <button id="bbEnh_notifBell" aria-label="Notifications" style="background:none;border:none;cursor:pointer;font-size:1.1rem;position:relative;margin-right:0.75rem;">🔔
+                        <span id="bbEnh_notifCount" style="position:absolute;top:-6px;right:-10px;background:#ef4444;color:white;border-radius:999px;padding:0 6px;font-size:0.7rem;display:none;">0</span>
+                    </button>
+                    <div id="bbEnh_notifDropdown" style="display:none;position:absolute;right:0;top:36px;min-width:260px;background:white;border:1px solid #eee;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,0.08);z-index:120;padding:0.5rem;max-height:320px;overflow:auto;">
+                        <div style="font-weight:700;padding:0.5rem 0.5rem;border-bottom:1px solid #f3f4f6;">Alerts</div>
+                        <div id="bbEnh_notifList" style="font-size:0.9rem;color:#333;padding:0.5rem;"></div>
+                    </div>
+                </div>
+                <div class="user-badge">Seller</div>
+                <div class="logout">🚪 Logout</div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section active dashboard">
+            <h1>Seller Dashboard</h1>
+            <p>Search and connect with verified manufacturers</p>
+            <div class="feature-cards">
+                <div class="card">
+                    <div class="card-icon">🏭</div>
+                    <h3>Verified Manufacturers</h3>
+                    <p>Access a curated list of trusted suppliers with proven track records.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🤖</div>
+                    <h3>AI Sentiment Analysis</h3>
+                    <p>Get insights into manufacturer reliability through advanced AI analysis.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">⚠️</div>
+                    <h3>Risk Scoring</h3>
+                    <p>Evaluate potential risks with comprehensive scoring systems.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📦</div>
+                    <h3>Smart Order Tracking</h3>
+                    <p>Monitor your orders in real-time with intelligent tracking features.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search Section -->
+        <section id="search" class="section search-section">
+            <h1>Search Manufacturers</h1>
+            <div class="search-controls">
+                <div class="search-inputs">
+                    <input type="text" class="search-input" placeholder="Search by Product (Electronics, Textiles, etc.)" id="product-search">
+                    <input type="file" class="file-input" accept="image/*" id="image-upload">
+                </div>
+                <div class="sort-buttons">
+                    <button class="sort-btn" data-sort="rating">Sort by Rating</button>
+                    <button class="sort-btn" data-sort="sentiment">Sort by AI Sentiment</button>
+                    <button class="sort-btn" data-sort="risk">Sort by Risk Level</button>
+                </div>
+            </div>
+            <div class="manufacturer-grid" id="manufacturer-grid">
+                <!-- Manufacturer cards will be populated by JS -->
+            </div>
+        </section>
+
+        <!-- Orders Section -->
+        <section id="orders" class="section orders-section">
+            <h1>Order Management</h1>
+            <div class="order-summary">
+                <div class="summary-card">
+                    <h3 id="total-orders">0</h3>
+                    <p>Total Orders</p>
+                </div>
+                <div class="summary-card">
+                    <h3 id="in-transit">0</h3>
+                    <p>In Transit</p>
+                </div>
+                <div class="summary-card">
+                    <h3 id="delivered">0</h3>
+                    <p>Delivered</p>
+                </div>
+            </div>
+            <div class="order-history" id="order-history">
+                <!-- Order items will be populated by JS -->
+            </div>
+        </section>
+    </main>
+
+    <!-- bbEnh: Place Order Modal -->
+    <div class="modal" id="bbEnh_placeOrderModal">
+        <div class="modal-content">
+            <h2>Place Order</h2>
+            <div style="margin-bottom:0.5rem;"><label style="font-weight:600;">Manufacturer</label>
+                <div id="bbEnh_orderManufacturerDisplay" style="padding:0.5rem 0; color:#374151;"></div>
+            </div>
+            <div style="margin-bottom:0.5rem;"><label>Product Name</label>
+                <input id="bbEnh_orderProduct" type="text" style="width:100%;padding:0.5rem;border:1px solid #d1d5db;border-radius:6px;" />
+            </div>
+            <div style="margin-bottom:0.5rem;"><label>Quantity</label>
+                <input id="bbEnh_orderQty" type="number" min="1" value="1" style="width:100%;padding:0.5rem;border:1px solid #d1d5db;border-radius:6px;" />
+            </div>
+            <div style="margin-bottom:0.5rem;"><label>Delivery Address</label>
+                <input id="bbEnh_orderAddress" type="text" placeholder="Enter delivery address" style="width:100%;padding:0.5rem;border:1px solid #d1d5db;border-radius:6px;" />
+            </div>
+            <div style="display:flex;justify-content:flex-end;gap:0.5rem;margin-top:1rem;">
+                <button class="btn btn-secondary" onclick="document.getElementById('bbEnh_placeOrderModal').classList.remove('active')">Cancel</button>
+                <button class="btn btn-primary" onclick="bbEnh_confirmPlaceOrder()">Confirm Order</button>
+            </div>
+        </div>
+            <!-- bbEnh: Cancel Confirmation Modal -->
+            <div class="modal" id="bbEnh_cancelConfirmModal">
+                <div class="modal-content">
+                    <h2>Confirm Cancellation</h2>
+                    <p>Are you sure you want to request cancellation for this order?</p>
+                    <div style="display:flex;justify-content:flex-end;gap:0.5rem;margin-top:1rem;">
+                        <button class="btn btn-secondary" onclick="document.getElementById('bbEnh_cancelConfirmModal').classList.remove('active')">Close</button>
+                        <button class="btn btn-primary" onclick="bbEnh_confirmCancel()">Confirm</button>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <!-- bbEnh: Messaging Panel (slide-in) -->
+    <div id="bbEnh_messagingPanel" style="position:fixed;right:-380px;top:70px;width:360px;height:calc(100% - 100px);background:white;border-left:1px solid #eee;box-shadow:-8px 0 24px rgba(0,0,0,0.06);border-radius:8px 0 0 8px;z-index:1100;transition:right 0.28s;overflow:hidden;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;border-bottom:1px solid #f3f4f6;">
+            <div style="font-weight:700;" id="bbEnh_convTitle">Conversation</div>
+            <button style="background:none;border:none;font-size:1.1rem;cursor:pointer;" onclick="bbEnh_closeMessaging()">✕</button>
+        </div>
+        <div id="bbEnh_convList" style="padding:0.75rem;height:calc(100% - 140px);overflow:auto;font-size:0.9rem;color:#333;">
+            <div style="color:#999">No conversation yet</div>
+        </div>
+        <div style="padding:0.6rem;border-top:1px solid #f3f4f6;">
+            <textarea id="bbEnh_messageInput" placeholder="Write a message" style="width:100%;height:68px;padding:0.5rem;border:1px solid #d1d5db;border-radius:6px;resize:none;"></textarea>
+            <div style="display:flex;justify-content:flex-end;margin-top:0.5rem;">
+                <button class="btn btn-primary" onclick="bbEnh_sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Existing Review Modal -->
+    <div class="modal" id="review-modal">
+        <div class="modal-content">
+            <h2>Submit Review</h2>
+            <div class="rating-stars" id="rating-stars">
+                <span class="star" data-rating="1">★</span>
+                <span class="star" data-rating="2">★</span>
+                <span class="star" data-rating="3">★</span>
+                <span class="star" data-rating="4">★</span>
+                <span class="star" data-rating="5">★</span>
+            </div>
+            <textarea class="review-text" placeholder="Write your review here..." id="review-text"></textarea>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" id="close-modal">Close</button>
+                <button class="btn btn-primary" id="submit-review">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div class="modal" id="order-modal">
+        <div class="modal-content order-modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2>Order Details</h2>
+                <button class="btn btn-secondary" id="close-order-modal" style="padding: 0.25rem 0.5rem;">✕</button>
+            </div>
+            <div class="order-details" id="order-details">
+                <!-- Order details will be populated by JS -->
+            </div>
+            <div class="status-timeline" id="status-timeline">
+                <!-- Timeline will be populated by JS -->
+            </div>
+            <div class="action-buttons" id="action-buttons">
+                <!-- Action buttons will be populated by JS -->
+            </div>
+            <div class="shipment-form" id="shipment-form">
+                <h3>Shipment Details</h3>
+                <div class="form-group">
+                    <label for="courier-select">Courier Partner</label>
+                    <select id="courier-select">
+                        <option value="">Select Courier</option>
+                        <option value="FedEx">FedEx</option>
+                        <option value="UPS">UPS</option>
+                        <option value="DHL">DHL</option>
+                        <option value="USPS">USPS</option>
+                        <option value="Aramex">Aramex</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="tracking-id">Tracking ID</label>
+                    <input type="text" id="tracking-id" placeholder="Enter tracking ID">
+                </div>
+                <div class="form-group">
+                    <label for="estimated-delivery">Estimated Delivery Date</label>
+                    <input type="date" id="estimated-delivery">
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" id="cancel-shipment">Cancel</button>
+                    <button class="btn btn-primary" id="submit-shipment">Submit Shipment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast-notification"></div>
+
+    <script>
+        // Mock data
+        const manufacturers = [
+            {
+                name: "TechCorp Manufacturing",
+                location: "Shenzhen, China",
+                rating: 4.8,
+                sentiment: "very-positive",
+                risk: "low",
+                tags: ["Electronics", "Gadgets", "Smartphones"]
+            },
+            {
+                name: "Global Textiles Ltd",
+                location: "Dhaka, Bangladesh",
+                rating: 4.2,
+                sentiment: "positive",
+                risk: "medium",
+                tags: ["Clothing", "Fabrics", "Apparel"]
+            },
+            {
+                name: "Precision Parts Inc",
+                location: "Taipei, Taiwan",
+                rating: 4.9,
+                sentiment: "very-positive",
+                risk: "low",
+                tags: ["Automotive", "Machinery", "Components"]
+            },
+            {
+                name: "EcoFriendly Goods",
+                location: "Ho Chi Minh City, Vietnam",
+                rating: 3.7,
+                sentiment: "neutral",
+                risk: "high",
+                tags: ["Eco-friendly", "Home Goods", "Sustainable"]
+            },
+            {
+                name: "Innovate Solutions",
+                location: "Bangalore, India",
+                rating: 4.5,
+                sentiment: "positive",
+                risk: "medium",
+                tags: ["Software", "IT Services", "Consulting"]
+            },
+            {
+                name: "Quality Plastics Co",
+                location: "Guangzhou, China",
+                rating: 4.1,
+                sentiment: "positive",
+                risk: "low",
+                tags: ["Plastics", "Packaging", "Molding"]
+            }
+        ];
+
+        const orders = [
+            {
+                orderId: "ORD-001",
+                productName: "Wireless Earbuds",
+                manufacturer: "TechCorp Manufacturing",
+                quantity: 100,
+                status: "Delivered",
+                orderDate: "2023-10-15",
+                trackingNumber: "FX123456789",
+                estimatedDelivery: "2023-10-20",
+                reviewSubmitted: false,
+                statusUpdatedBy: "Manufacturer",
+                lastUpdatedDate: "2023-10-20"
+            },
+            {
+                orderId: "ORD-002",
+                productName: "Cotton T-Shirts",
+                manufacturer: "Global Textiles Ltd",
+                quantity: 500,
+                status: "In Transit",
+                orderDate: "2023-10-20",
+                trackingNumber: "UPS987654321",
+                estimatedDelivery: "2023-10-30",
+                reviewSubmitted: false,
+                statusUpdatedBy: "Manufacturer",
+                lastUpdatedDate: "2023-10-22"
+            },
+            {
+                orderId: "ORD-003",
+                productName: "Car Engine Parts",
+                manufacturer: "Precision Parts Inc",
+                quantity: 50,
+                status: "In Transit",
+                orderDate: "2023-10-10",
+                trackingNumber: "DHL456789123",
+                estimatedDelivery: "2023-10-25",
+                reviewSubmitted: false,
+                statusUpdatedBy: "Manufacturer",
+                lastUpdatedDate: "2023-10-18"
+            },
+            {
+                orderId: "ORD-004",
+                productName: "Eco Bags",
+                manufacturer: "EcoFriendly Goods",
+                quantity: 200,
+                status: "Placed",
+                orderDate: "2023-10-25",
+                trackingNumber: null,
+                estimatedDelivery: null,
+                reviewSubmitted: false,
+                statusUpdatedBy: "Manufacturer",
+                lastUpdatedDate: "2023-10-25"
+            }
+        ];
+
+        // DOM elements
+        const navTabs = document.querySelectorAll('.nav-tab');
+        const sections = document.querySelectorAll('.section');
+        const manufacturerGrid = document.getElementById('manufacturer-grid');
+        const productSearch = document.getElementById('product-search');
+        const sortButtons = document.querySelectorAll('.sort-btn');
+        const orderHistory = document.getElementById('order-history');
+        const reviewModal = document.getElementById('review-modal');
+        const orderModal = document.getElementById('order-modal');
+        const closeModal = document.getElementById('close-modal');
+        const submitReview = document.getElementById('submit-review');
+        const ratingStars = document.querySelectorAll('.star');
+        const reviewText = document.getElementById('review-text');
+
+        let currentSort = 'rating';
+        let currentRating = 0;
+        let currentOrderId = null;
+
+        // Initialize
+        function init() {
+            renderManufacturers();
+            renderOrders();
+            updateOrderSummaryCounts();
+        }
+
+        // Tab switching
+        navTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.dataset.tab;
+                navTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                sections.forEach(s => s.classList.remove('active'));
+                document.getElementById(tabName).classList.add('active');
+            });
+        });
+
+        // Render manufacturers
+        function renderManufacturers() {
+            let filteredManufacturers = [...manufacturers];
+
+            // Search filter
+            const searchTerm = productSearch.value.toLowerCase();
+            if (searchTerm) {
+                filteredManufacturers = filteredManufacturers.filter(m =>
+                    m.tags.some(tag => tag.toLowerCase().includes(searchTerm)) ||
+                    m.name.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            // Sort
+            filteredManufacturers.sort((a, b) => {
+                if (currentSort === 'rating') {
+                    return b.rating - a.rating;
+                } else if (currentSort === 'sentiment') {
+                    const sentimentOrder = { 'very-positive': 3, 'positive': 2, 'neutral': 1 };
+                    return sentimentOrder[b.sentiment] - sentimentOrder[a.sentiment];
+                } else if (currentSort === 'risk') {
+                    const riskOrder = { 'low': 3, 'medium': 2, 'high': 1 };
+                    return riskOrder[b.risk] - riskOrder[a.risk];
+                }
+                return 0;
+            });
+
+            manufacturerGrid.innerHTML = filteredManufacturers.map(m => `
+                <div class="manufacturer-card">
+                    <div class="manufacturer-name">${m.name}</div>
+                    <div class="manufacturer-location">${m.location}</div>
+                    <div class="rating">
+                        <span>⭐</span>
+                        <span>${m.rating}</span>
+                    </div>
+                    <div class="sentiment ${m.sentiment}">${m.sentiment.replace('-', ' ').toUpperCase()}</div>
+                    <div class="risk ${m.risk}">${m.risk.toUpperCase()} RISK</div>
+                    <div class="tags">
+                        ${m.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </div>
+                    <div class="card-buttons">
+                        <button class="btn btn-secondary">View Details</button>
+                        <button class="btn btn-secondary" onclick="openPlaceOrderModal('${m.name}')">Place Order</button>
+                        <button class="btn btn-primary" onclick="openMessagingPanel('${m.name}')">Contact</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render orders
+        function renderOrders() {
+            orderHistory.innerHTML = orders.map(order => `
+                <div class="order-item">
+                    <div class="order-header">
+                        <div class="order-title">${order.productName}</div>
+                        <div class="order-id">${order.orderId}</div>
+                    </div>
+                    <div class="order-details">
+                        <div class="order-info">
+                            <div>Manufacturer: ${order.manufacturer}</div>
+                            <div>Quantity: ${order.quantity}</div>
+                            <div>Date: ${order.orderDate}</div>
+                        </div>
+                        <div class="status ${order.status.toLowerCase().replace(' ', '-')} status-readonly">
+                            Delivery Status (Updated by Manufacturer)
+                            <div class="helper-text">This status is updated by the manufacturer and logistics partner.</div>
+                            <div class="seller-view-only">Seller view-only</div>
+                        </div>
+                        <div class="card-buttons">
+                            <button class="btn btn-secondary" data-order-id="${order.orderId}" onclick="openOrderModal('${order.orderId}')" data-tooltip="Open modal">View</button>
+                            <button class="btn btn-secondary" onclick="bbEnh_toggleOrderDetails('${order.orderId}')">View Details</button>
+                            ${order.status === 'Delivered' && !order.reviewSubmitted ? `<button class="btn btn-primary" data-order-id="${order.orderId}" onclick="openReviewModal('${order.orderId}')">Submit Review</button>` : ''}
+                        </div>
+                        <div id="bbEnh_orderDetails-${order.orderId}" class="bbEnh_orderDetails" style="display:none;border-top:1px solid #f3f4f6;margin-top:0.6rem;">
+                            <div style="font-size:0.95rem;color:#374151;margin-bottom:0.4rem;"><strong>Full Order Info</strong></div>
+                            <div style="font-size:0.9rem;color:#6b7280;">Tracking: ${order.trackingNumber || 'N/A'}</div>
+                            <div style="font-size:0.9rem;color:#6b7280;">Estimated Delivery: ${order.estimatedDelivery || 'N/A'}</div>
+                            <div style="margin-top:0.6rem;display:flex;gap:0.5rem;">
+                                <button class="btn btn-secondary" onclick="bbEnh_requestCancel('${order.orderId}')">Request Cancel</button>
+                                <button class="btn btn-primary" onclick="bbEnh_reorder('${order.orderId}')">Reorder</button>
+                            </div>
+                            <div style="margin-top:0.6rem;font-size:0.9rem;color:#6b7280;">Timeline:</div>
+                            <div class="bbEnh_timeline" aria-hidden="false">
+                                ${(() => {
+                                    const steps = ['Placed','Shipped','In Transit','Delivered'];
+                                    const idx = Math.max(0, steps.indexOf(order.status));
+                                    return steps.map((s,i) => `
+                                        <div style="display:flex;align-items:center;gap:6px;width:100%;">
+                                            <div class="bbEnh_step ${i<=idx ? 'completed' : ''}" title="${s}"></div>
+                                            <div style="font-size:0.85rem;color:#374151;min-width:80px;">${s}</div>
+                                            ${i < steps.length-1 ? '<div class="bbEnh_connector"></div>' : ''}
+                                        </div>
+                                    `).join('');
+                                })()}
+                            </div>
+                            <div style="margin-top:0.6rem;font-size:0.85rem;color:#6b7280;">Last updated: ${order.lastUpdatedDate || ''}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ----- bbEnh: Order placement, messaging, notifications, details -----
+
+        // Open place-order modal and prefill product/manufacturer
+        function openPlaceOrderModal(manufacturer) {
+            document.getElementById('bbEnh_orderManufacturerDisplay').textContent = manufacturer;
+            document.getElementById('bbEnh_orderProduct').value = (productSearch && productSearch.value) ? productSearch.value : '';
+            document.getElementById('bbEnh_orderQty').value = 1;
+            document.getElementById('bbEnh_orderAddress').value = '';
+            document.getElementById('bbEnh_placeOrderModal').classList.add('active');
+        }
+
+        // Confirm and add order
+        function bbEnh_confirmPlaceOrder() {
+            const manufacturer = document.getElementById('bbEnh_orderManufacturerDisplay').textContent || 'Unknown';
+            const product = document.getElementById('bbEnh_orderProduct').value.trim();
+            const qty = parseInt(document.getElementById('bbEnh_orderQty').value, 10) || 1;
+            const address = document.getElementById('bbEnh_orderAddress').value.trim();
+            if (!product || !address) { showToast('Please provide product and delivery address', true); return; }
+            const orderId = 'ORD-' + Date.now().toString().slice(-6);
+            const newOrder = {
+                orderId: orderId,
+                productName: product,
+                manufacturer: manufacturer,
+                quantity: qty,
+                status: 'Placed',
+                orderDate: new Date().toISOString().slice(0,10),
+                trackingNumber: null,
+                estimatedDelivery: null,
+                reviewSubmitted: false,
+                statusUpdatedBy: 'Seller',
+                lastUpdatedDate: new Date().toLocaleString()
+            };
+            orders.unshift(newOrder);
+            renderOrders();
+            updateOrderSummaryCounts();
+            document.getElementById('bbEnh_placeOrderModal').classList.remove('active');
+            showToast('Order placed: ' + orderId);
+            bbEnh_addNotification('Order', `Placed ${product} with ${manufacturer} (${orderId})`);
+        }
+
+        // Messaging panel
+        function openMessagingPanel(manufacturer) {
+            window.bbEnh_currentConv = manufacturer;
+            document.getElementById('bbEnh_convTitle').textContent = manufacturer;
+            const panel = document.getElementById('bbEnh_messagingPanel');
+            panel.style.right = '0px';
+            bbEnh_renderConversation(manufacturer);
+        }
+
+        function bbEnh_closeMessaging() {
+            const panel = document.getElementById('bbEnh_messagingPanel');
+            panel.style.right = '-380px';
+        }
+
+        function bbEnh_renderConversation(manufacturer) {
+            const convList = document.getElementById('bbEnh_convList');
+            const conv = JSON.parse(localStorage.getItem('bbEnh_conversations') || '{}')[manufacturer] || [];
+            if (!conv || conv.length === 0) {
+                convList.innerHTML = '<div style="color:#999;padding:0.5rem;">No conversation yet</div>';
+                return;
+            }
+            convList.innerHTML = conv.map(m => `<div class="message-bubble ${m.from === 'Seller' ? 'from-seller' : 'from-manufacturer'}" style="${m.from === 'Seller' ? 'text-align:right;' : ''}">${m.text}<div style="font-size:0.75rem;color:#9ca3af;margin-top:0.25rem;">${m.timestamp}</div></div>`).join('');
+            convList.scrollTop = convList.scrollHeight;
+        }
+
+        function bbEnh_sendMessage() {
+            const txtEl = document.getElementById('bbEnh_messageInput');
+            const text = txtEl.value.trim();
+            if (!text) return;
+            const manufacturer = window.bbEnh_currentConv || 'Unknown';
+            const conversations = JSON.parse(localStorage.getItem('bbEnh_conversations') || '{}');
+            conversations[manufacturer] = conversations[manufacturer] || [];
+            const msg = { from: 'Seller', text: text, timestamp: new Date().toLocaleString() };
+            conversations[manufacturer].push(msg);
+            localStorage.setItem('bbEnh_conversations', JSON.stringify(conversations));
+            txtEl.value = '';
+            bbEnh_renderConversation(manufacturer);
+            bbEnh_addNotification('Message', `Message sent to ${manufacturer}`);
+            // Simulate reply
+            setTimeout(() => {
+                conversations[manufacturer].push({ from: 'Manufacturer', text: 'Thanks, we received your message and will respond shortly.', timestamp: new Date().toLocaleString() });
+                localStorage.setItem('bbEnh_conversations', JSON.stringify(conversations));
+                bbEnh_renderConversation(manufacturer);
+                bbEnh_addNotification('Message', `Reply from ${manufacturer}`);
+            }, 1200);
+        }
+
+        // Notifications
+        function bbEnh_addNotification(type, message) {
+            const key = 'bbEnh_notifications';
+            const list = JSON.parse(localStorage.getItem(key) || '[]');
+            list.unshift({ type: type, message: message, timestamp: new Date().toLocaleString(), read: false });
+            localStorage.setItem(key, JSON.stringify(list.slice(0, 50)));
+            bbEnh_renderNotifications();
+        }
+
+        function bbEnh_renderNotifications() {
+            const key = 'bbEnh_notifications';
+            const list = JSON.parse(localStorage.getItem(key) || '[]');
+            const container = document.getElementById('bbEnh_notifList');
+            const countEl = document.getElementById('bbEnh_notifCount');
+            if (!container) return;
+            if (list.length === 0) {
+                container.innerHTML = '<div style="color:#999;padding:0.5rem;">No notifications</div>';
+                countEl.style.display = 'none';
+                return;
+            }
+            container.innerHTML = list.map(n => `<div style="padding:0.5rem;border-bottom:1px solid #f7f7f7;"><strong>${n.type}</strong>: ${n.message}<div style="font-size:0.75rem;color:#9ca3af;margin-top:0.25rem;">${n.timestamp}</div></div>`).join('');
+            const unread = list.filter(x => !x.read).length;
+            if (unread > 0) { countEl.textContent = unread; countEl.style.display = 'inline-block'; } else { countEl.style.display = 'none'; }
+        }
+
+        // Toggle details for an order card
+        function bbEnh_toggleOrderDetails(orderId) {
+            const el = document.getElementById('bbEnh_orderDetails-' + orderId);
+            if (!el) return;
+            el.style.display = (el.style.display === 'none' || el.style.display === '') ? 'block' : 'none';
+        }
+
+        // Simulated cancel request (shows confirmation modal)
+        function bbEnh_requestCancel(orderId) {
+            window.bbEnh_pendingCancel = orderId;
+            document.getElementById('bbEnh_cancelConfirmModal').classList.add('active');
+        }
+
+        function bbEnh_confirmCancel() {
+            const orderId = window.bbEnh_pendingCancel;
+            if (!orderId) return;
+            document.getElementById('bbEnh_cancelConfirmModal').classList.remove('active');
+            showToast('Cancellation request submitted');
+            bbEnh_addNotification('Order', `Cancellation request submitted for ${orderId}`);
+            // mark pending cancel cleared
+            window.bbEnh_pendingCancel = null;
+        }
+
+        // Reorder: duplicate order object into orders and notify
+        function bbEnh_reorder(orderId) {
+            const o = orders.find(x => x.orderId === orderId);
+            if (!o) return;
+            const newId = 'ORD-' + Date.now().toString().slice(-6);
+            const newOrder = Object.assign({}, o, { orderId: newId, orderDate: new Date().toISOString().slice(0,10), status: 'Placed', lastUpdatedDate: new Date().toLocaleString() });
+            orders.unshift(newOrder);
+            renderOrders();
+            updateOrderSummaryCounts();
+            showToast('Order placed successfully');
+            bbEnh_addNotification('Order', `Reorder placed: ${newId} (${o.productName})`);
+        }
+
+        // Attach notif bell toggle
+        document.getElementById('bbEnh_notifBell').addEventListener('click', (e) => {
+            const dd = document.getElementById('bbEnh_notifDropdown');
+            const willOpen = (dd.style.display === 'none' || dd.style.display === '');
+            dd.style.display = willOpen ? 'block' : 'none';
+            // If opening, mark notifications as read
+            if (willOpen) {
+                const key = 'bbEnh_notifications';
+                const list = JSON.parse(localStorage.getItem(key) || '[]');
+                for (let i=0;i<list.length;i++) list[i].read = true;
+                localStorage.setItem(key, JSON.stringify(list));
+                bbEnh_renderNotifications();
+            }
+            e.stopPropagation();
+        });
+        document.addEventListener('click', () => { const dd = document.getElementById('bbEnh_notifDropdown'); if (dd) dd.style.display = 'none'; });
+
+        // Initialize notifications UI on load
+        bbEnh_renderNotifications();
+
+        // Update order summary counts
+        function updateOrderSummaryCounts() {
+            // "Total Orders" = orders.length
+            const total = orders.length;
+
+            // "In Transit" = count of orders where status === 'In Transit'
+            const inTransit = orders.filter(o => o.status === 'In Transit').length;
+
+            // "Delivered" = count of orders where status === 'Delivered'
+            const delivered = orders.filter(o => o.status === 'Delivered').length;
+
+            // Update DOM elements
+            document.getElementById('total-orders').textContent = total;
+            document.getElementById('in-transit').textContent = inTransit;
+            document.getElementById('delivered').textContent = delivered;
+        }
+
+        // Search functionality
+        productSearch.addEventListener('input', renderManufacturers);
+
+        // Sort functionality
+        sortButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                sortButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentSort = btn.dataset.sort;
+                renderManufacturers();
+            });
+        });
+
+        // Review modal
+        function openReviewModal(orderId) {
+            currentOrderId = orderId;
+            reviewModal.classList.add('active');
+            // Reset rating and text
+            ratingStars.forEach(star => star.classList.remove('active'));
+            reviewText.value = '';
+            currentRating = 0;
+        }
+
+        closeModal.addEventListener('click', () => {
+            reviewModal.classList.remove('active');
+        });
+
+        ratingStars.forEach(star => {
+            star.addEventListener('click', () => {
+                const rating = parseInt(star.dataset.rating);
+                currentRating = rating;
+                ratingStars.forEach((s, i) => {
+                    if (i < rating) {
+                        s.classList.add('active');
+                    } else {
+                        s.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        submitReview.addEventListener('click', () => {
+            if (currentRating > 0) {
+                // Find the order and mark review as submitted
+                const order = orders.find(o => o.orderId === currentOrderId);
+                if (order) {
+                    order.reviewSubmitted = true;
+                }
+                // Show success message
+                showToast('Review submitted successfully!', false);
+                reviewModal.classList.remove('active');
+                // Re-render orders to hide the review button
+                renderOrders();
+            } else {
+                showToast('Please select a rating.', true);
+            }
+        });
+
+        // Order modal functionality
+        function openOrderModal(orderId) {
+            const order = orders.find(o => o.orderId === orderId);
+            if (!order) return;
+
+            currentOrderId = orderId;
+
+            // Populate order details
+            document.getElementById('order-details').innerHTML = `
+                <h3>Order Information</h3>
+                <p><strong>Order ID:</strong> ${order.orderId}</p>
+                <p><strong>Product:</strong> ${order.productName}</p>
+                <p><strong>Manufacturer:</strong> ${order.manufacturer}</p>
+                <p><strong>Quantity:</strong> ${order.quantity}</p>
+                <p><strong>Order Date:</strong> ${order.orderDate}</p>
+                <p><strong>Delivery Status (Updated by Manufacturer):</strong> <span class="status ${order.deliveryStatus.toLowerCase().replace('_', '-')} status-readonly">${order.deliveryStatus}</span></p>
+                <div class="helper-text">This status is updated by the manufacturer and logistics partner.</div>
+                <div class="last-updated">Last updated by: ${order.statusUpdatedBy} | Last updated on: ${order.lastUpdatedDate}</div>
+                ${order.trackingNumber ? `<p><strong>Tracking Number:</strong> ${order.trackingNumber}</p>` : ''}
+                ${order.estimatedDelivery ? `<p><strong>Estimated Delivery:</strong> ${order.estimatedDelivery}</p>` : ''}
+                <div class="delivery-info-note">Delivery information provided by manufacturer.</div>
+            `;
+
+            // Render timeline
+            renderTimeline(order.status.toLowerCase().replace(' ', '-'));
+
+            // Render action buttons
+            renderActionButtons(order.status.toLowerCase().replace(' ', '-'));
+
+            // Hide shipment form initially
+            document.getElementById('shipment-form').classList.remove('active');
+
+            // Show modal
+            orderModal.classList.add('active');
+        }
+
+        function renderTimeline(currentStatus) {
+            const steps = ['pending', 'packed', 'shipped', 'delivered'];
+            const currentIndex = steps.indexOf(currentStatus);
+
+            const timelineHTML = steps.map((step, index) => {
+                let statusClass = '';
+                if (index < currentIndex) {
+                    statusClass = 'completed';
+                } else if (index === currentIndex) {
+                    statusClass = 'current';
+                }
+
+                const icons = {
+                    'pending': '⏳',
+                    'packed': '📦',
+                    'shipped': '🚚',
+                    'delivered': '✅'
+                };
+
+                const labels = {
+                    'pending': 'Order Placed',
+                    'packed': 'Packed',
+                    'shipped': 'Shipped',
+                    'delivered': 'Delivered'
+                };
+
+                return `
+                    <div class="timeline-step ${statusClass}">
+                        <div class="timeline-icon">${icons[step]}</div>
+                        <div class="timeline-label">${labels[step]}</div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('status-timeline').innerHTML = timelineHTML;
+        }
+
+        function renderActionButtons(status) {
+            let buttonsHTML = '';
+
+            // Seller cannot modify delivery status - only view
+            if (status === 'delivered') {
+                buttonsHTML = `<span class="status delivered">Order Completed</span>`;
+            } else {
+                buttonsHTML = `<span class="seller-view-only">Status updates handled by manufacturer</span>`;
+            }
+
+            document.getElementById('action-buttons').innerHTML = buttonsHTML;
+        }
+
+        function updateOrderStatus(newStatus) {
+            const order = orders.find(o => o.orderId === currentOrderId);
+            if (!order) return;
+
+            order.deliveryStatus = newStatus;
+            showToast(`Order ${order.orderId} status updated to ${newStatus.replace('-', ' ').toUpperCase()}`, false);
+
+            // Update UI
+            renderOrders();
+            updateOrderSummaryCounts();
+            renderTimeline(newStatus);
+            renderActionButtons(newStatus);
+        }
+
+        function showShipmentForm() {
+            document.getElementById('shipment-form').classList.add('active');
+        }
+
+        // Event listeners for modal
+        document.getElementById('close-order-modal').addEventListener('click', () => {
+            orderModal.classList.remove('active');
+        });
+
+        document.getElementById('cancel-shipment').addEventListener('click', () => {
+            document.getElementById('shipment-form').classList.remove('active');
+            // Reset form
+            document.getElementById('courier-select').value = '';
+            document.getElementById('tracking-id').value = '';
+            document.getElementById('estimated-delivery').value = '';
+        });
+
+        document.getElementById('submit-shipment').addEventListener('click', () => {
+            const courier = document.getElementById('courier-select').value;
+            const trackingId = document.getElementById('tracking-id').value;
+            const estimatedDelivery = document.getElementById('estimated-delivery').value;
+
+            if (!courier || !trackingId || !estimatedDelivery) {
+                showToast('Please fill in all shipment details', true);
+                return;
+            }
+
+            const order = orders.find(o => o.orderId === currentOrderId);
+            if (order) {
+                order.shipment = { courier, trackingId, estimatedDelivery };
+                order.deliveryStatus = 'SHIPPED';
+                showToast(`Order ${order.orderId} shipped successfully`, false);
+
+                // Update UI
+                renderOrders();
+                updateOrderSummaryCounts();
+                renderTimeline('shipped');
+                renderActionButtons('shipped');
+                document.getElementById('shipment-form').classList.remove('active');
+            }
+        });
+
+        // Close modal when clicking outside
+        orderModal.addEventListener('click', (e) => {
+            if (e.target === orderModal) {
+                orderModal.classList.remove('active');
+            }
+        });
+
+        // Toast notification function
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast-notification');
+            toast.textContent = message;
+            toast.classList.toggle('error', isError);
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize the app
+        init();
+    </script>
+</body>
+</html>

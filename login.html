@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SupplyChain AI - Sign In</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(180deg, #dbe9ff 0%, #e8f1ff 50%, #f0f5ff 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 18px;
+            font-weight: 400;
+            color: #6b7280;
+            letter-spacing: -0.2px;
+        }
+
+        .login-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+            width: 100%;
+            max-width: 540px;
+            padding: 48px 56px;
+        }
+
+        .card-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 32px;
+            letter-spacing: -0.3px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            height: 48px;
+            padding: 12px 16px;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            color: #1a1a1a;
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .form-group input::placeholder {
+            color: #9ca3af;
+            font-weight: 400;
+        }
+
+        .form-group input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-group input:hover {
+            border-color: #9ca3af;
+        }
+
+        .sign-in-btn {
+            width: 100%;
+            height: 48px;
+            background: #3b82f6;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 8px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .sign-in-btn:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .sign-in-btn:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            height: 1px;
+            background: #e5e7eb;
+            margin: 32px 0;
+        }
+
+        .demo-accounts {
+            margin-top: 32px;
+        }
+
+        .demo-accounts-title {
+            font-size: 14px;
+            font-weight: 400;
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+
+        .demo-account {
+            background: #f9fafb;
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #4b5563;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .demo-account:last-child {
+            margin-bottom: 0;
+        }
+
+        .demo-account:hover {
+            background: #f3f4f6;
+            transform: translateX(2px);
+        }
+
+        .demo-account strong {
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 36px;
+            }
+
+            .header p {
+                font-size: 16px;
+            }
+
+            .login-card {
+                padding: 36px 28px;
+                max-width: 100%;
+            }
+
+            .card-title {
+                font-size: 24px;
+            }
+        }
+
+        /* Loading state (optional) */
+        .sign-in-btn:disabled {
+            background: #93c5fd;
+            cursor: not-allowed;
+        }
+
+        /* Success animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-card {
+            animation: fadeIn 0.4s ease;
+        }
+
+        .header {
+            animation: fadeIn 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>SupplyChain AI</h1>
+        <p>AI-Powered Supplier Risk Management</p>
+    </div>
+
+    <div class="login-card">
+        <h2 class="card-title">Sign In</h2>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="Enter your email"
+                    required
+                    autocomplete="email"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    placeholder="Enter your password"
+                    required
+                    autocomplete="current-password"
+                >
+            </div>
+
+            <button type="submit" class="sign-in-btn" id="signInBtn">
+                Sign In
+            </button>
+        </form>
+
+        <div class="divider"></div>
+
+        <div class="demo-accounts">
+            <p class="demo-accounts-title">Demo Accounts:</p>
+            
+            <div class="demo-account" data-email="admin@platform.com" data-password="admin123">
+                <strong>Admin:</strong> admin@platform.com
+            </div>
+            
+            <div class="demo-account" data-email="seller@test.com" data-password="seller123">
+                <strong>Seller:</strong> seller@test.com
+            </div>
+            
+            <div class="demo-account" data-email="manufacturer@test.com" data-password="manu123">
+                <strong>Manufacturer:</strong> manufacturer@test.com
+            </div>
+        </div>
+    </div>
+
+    <script>
+       
+  // Replace 'loginForm' and field IDs with your actual element IDs
+  document.getElementById("loginForm").addEventListener("submit", async function (e) {
+    e.preventDefault(); // Prevent default form submission
+
+    const email    = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const errorEl  = document.getElementById("errorMessage"); // optional error display element
+
+    try {
+      const response = await fetch("http://127.0.0.1:5000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+
+      if (data.status === "success") {
+        // Redirect user to their role-based dashboard
+        window.location.href = data.redirect;
+      } else {
+        // Show error message to user
+        if (errorEl) errorEl.textContent = data.message;
+        else alert(data.message);
+      }
+
+    } catch (err) {
+      console.error("Login request failed:", err);
+      alert("Could not connect to the server. Is the backend running?");
+    }
+  });
+
+    </script>
+</body>
+</html>
