@@ -652,58 +652,6 @@
             background-color: #0052a3;
         }
 
-        /* ============================================================ */
-        /* ACCEPT/REJECT BUTTONS FOR ORDERS */
-        /* ============================================================ */
-        .order-action-buttons {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-
-        .accept-btn {
-            background-color: #22c55e;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 11px;
-            transition: background-color 0.2s;
-        }
-
-        .accept-btn:hover {
-            background-color: #16a34a;
-        }
-
-        .reject-btn {
-            background-color: #ef4444;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 11px;
-            transition: background-color 0.2s;
-        }
-
-        .reject-btn:hover {
-            background-color: #dc2626;
-        }
-
-        /* Status badge for Accepted/Rejected */
-        .status-accepted {
-            background-color: #d1fae5;
-            color: #065f46;
-        }
-
-        .status-rejected {
-            background-color: #fee2e2;
-            color: #991b1b;
-        }
-
         /* ADS VIEW */
         .ads-header {
             display: flex;
@@ -2078,68 +2026,6 @@
             }, 3000);
         });
 
-        /* ============================================================ */
-        /* ACCEPT/REJECT BUTTONS FUNCTIONALITY */
-        /* ============================================================ */
-
-        // Function to handle Accept button click
-        function acceptOrder(orderId) {
-            const order = appState.orders.find(o => o.id === orderId);
-            if (!order) return;
-
-            const previousStatus = order.status;
-            const newStatus = 'Accepted';
-
-            // Update order status in appState
-            order.status = newStatus;
-
-            // Save to localStorage with order ID as key for persistence
-            const orderStatusMap = JSON.parse(localStorage.getItem('orderStatusMap')) || {};
-            orderStatusMap[orderId] = newStatus;
-            localStorage.setItem('orderStatusMap', JSON.stringify(orderStatusMap));
-
-            // Log activity
-            activityLogger.logActivity('status', `Order ${orderId} accepted from ${previousStatus} to ${newStatus}`);
-
-            // Show notification
-            showToast(`Order ${orderId} has been accepted`, 'success');
-
-            // Re-render table to show updated status
-            renderOrdersTable();
-
-            // Check for unshipped orders and update reminder
-            updateShipmentReminder();
-        }
-
-        // Function to handle Reject button click
-        function rejectOrder(orderId) {
-            const order = appState.orders.find(o => o.id === orderId);
-            if (!order) return;
-
-            const previousStatus = order.status;
-            const newStatus = 'Rejected';
-
-            // Update order status in appState
-            order.status = newStatus;
-
-            // Save to localStorage with order ID as key for persistence
-            const orderStatusMap = JSON.parse(localStorage.getItem('orderStatusMap')) || {};
-            orderStatusMap[orderId] = newStatus;
-            localStorage.setItem('orderStatusMap', JSON.stringify(orderStatusMap));
-
-            // Log activity
-            activityLogger.logActivity('status', `Order ${orderId} rejected from ${previousStatus} to ${newStatus}`);
-
-            // Show notification
-            showToast(`Order ${orderId} has been rejected`, 'error');
-
-            // Re-render table to show updated status
-            renderOrdersTable();
-
-            // Check for unshipped orders and update reminder
-            updateShipmentReminder();
-        }
-
         // ORDERS VIEW
         function renderOrdersTable() {
             const tbody = document.getElementById('ordersTableBody');
@@ -2152,10 +2038,6 @@
                 if (displayStatus !== order.status) {
                     order.status = displayStatus;
                 }
-
-                // Check if order is still in pending state (can be accepted/rejected)
-                const canAcceptReject = displayStatus === 'Pending';
-
                 return `
                     <tr>
                         <td>${order.id}</td>
@@ -2163,15 +2045,7 @@
                         <td>${order.quantity}</td>
                         <td>${order.date}</td>
                         <td><span class="status-badge status-${displayStatus.toLowerCase()}">${displayStatus}</span></td>
-                        <td>
-                            <div class="order-action-buttons">
-                                ${canAcceptReject ? `
-                                    <button class="accept-btn" onclick="acceptOrder('${order.id}')">Accept</button>
-                                    <button class="reject-btn" onclick="rejectOrder('${order.id}')">Reject</button>
-                                ` : ''}
-                                <button class="view-btn" onclick="viewOrder('${order.id}')">View</button>
-                            </div>
-                        </td>
+                        <td><button class="view-btn" onclick="viewOrder('${order.id}')">View</button></td>
                     </tr>
                 `;
             }).join('');
